@@ -48,7 +48,15 @@
   ];
   /* ---------- helpers ---------- */
   function clone(o) { return JSON.parse(JSON.stringify(o)); }
-  function uid(prefix) { return (prefix || 'id') + '-' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
+  /* id único: crypto seguro (sem Math.random previsível); fallback preservado */
+  function uid(prefix) {
+    try {
+      if (global.crypto && crypto.getRandomValues) {
+        var b = new Uint32Array(2); crypto.getRandomValues(b);
+        return (prefix || 'id') + '-' + Date.now().toString(36) + b[0].toString(36) + b[1].toString(36);
+      }
+    } catch (e) { /* sem crypto: usa fallback abaixo */ }
+    return (prefix || 'id') + '-' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
   function read(key, fallback) {
     try {
       var raw = localStorage.getItem(key);

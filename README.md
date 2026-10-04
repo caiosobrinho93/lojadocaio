@@ -29,15 +29,16 @@ imgs/                 -> fotos dos produtos
    - Clique em **“Enviar produtos para a nuvem”** (envia os 8 produtos de exemplo).
 4. Pronto: a loja passa a mostrar os produtos vindos do banco.
 
-A conexão usa `config.js`:
+A conexão usa `config.js` (sem segredos no repo):
 
 ```js
-window.NEON_CONFIG = {
-  supabaseUrl: 'https://iieemoegprfqbfuepmgj.supabase.co',
-  supabaseKey: 'sb_publishable_...',   // chave PÚBLICA (pode ficar no front)
-  table: 'products'
-};
+// config.js — lê de localStorage (chave salva no admin) ou config.local.js (dev)
+window.NEON_CONFIG = { supabaseUrl: 'https://...', supabaseKey: '', table: 'products' };
 ```
+
+> **Chave publishable:** cole no painel `admin.html` → seção **Nuvem → Chave local**
+> (fica só no navegador, nunca commitada). Para dev local, copie
+> `config.local.example.js` para `config.local.js` (ignorado pelo git).
 
 ## Painel (admin.html)
 
@@ -56,7 +57,8 @@ O badge no topo mostra **Nuvem** (conectado) ou **Local**.
 3. Framework Preset: **Other**. Build Command: (vazio). Output Directory: (raiz `.`).
 4. **Deploy**. A loja fica em `https://SEU-PROJETO.vercel.app` e o painel em `/admin.html`.
 
-> Como é 100% estático, **não precisa** de variáveis de ambiente no Vercel — as chaves já estão em `config.js` (a chave *publishable* é pública por design).
+> Como é 100% estático, **não precisa** de variáveis de ambiente no Vercel — a chave
+> publishable é colada no painel (admin → Nuvem → Chave local) e fica só no navegador.
 
 ### GitHub Pages (alternativa)
 Settings → Pages → Deploy from branch → `main` / `root`.

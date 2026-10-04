@@ -358,7 +358,15 @@ kbd{font-family:'Space Grotesk';background:var(--bg);border:1px solid var(--line
     <button id="upBtn" class="btn ghost" type="button">⬆ Enviar produtos para a nuvem</button>
     <button id="downBtn" class="btn ghost" type="button">⬇ Baixar da nuvem</button>
   </div>
-  <p class="hint" style="margin:14px 0 0;font-size:12.6px">Primeira vez? Rode <code>supabase-schema.sql</code> no SQL Editor e depois clique em “Enviar”.</p>
+  <p class="hint" style="margin:14px 0 0;font-size:12.6px">Primeira vez? Rode <code>supabase-schema.sql</code> no SQL Editor e depois clique em “Enviar”. A chave <b>nunca</b> vai para o git — fica só neste navegador.</p>
+  <div class="divider" style="margin-top:16px">Chave local (neste navegador)</div>
+  <label>Supabase URL<input id="cfg_url" type="text" placeholder="https://xxxx.supabase.co" autocomplete="off"></label>
+  <label>Chave publishable<input id="cfg_key" type="password" placeholder="sb_publishable_..." autocomplete="off"></label>
+  <div class="actions" style="margin-top:0">
+    <button id="cfgSave" class="btn" type="button">Salvar chave local</button>
+    <button id="cfgClear" class="btn ghost" type="button">Apagar chave local</button>
+  </div>
+  <p class="hint" id="cfgState" style="margin:10px 0 0"></p>
 </div>
 
 <div class="sec">
@@ -435,7 +443,9 @@ kbd{font-family:'Space Grotesk';background:var(--bg);border:1px solid var(--line
 <div id="toasts"></div>
 
 <script src="config.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<!-- config.local.js (opcional, ignorado pelo git): chave publishable p/ dev local -->
+<script src="config.local.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.js" integrity="sha384-Rj26LVGvoeRVR6+mwQmFfcR3QOBEwT+ZmuCWpuiqeTzJpCs0ER4ITAWGb4Hiy3Ok" crossorigin="anonymous"></script>
 <script src="data.js"></script>
 <script>
 (function(){
@@ -676,6 +686,12 @@ kbd{font-family:'Space Grotesk';background:var(--bg);border:1px solid var(--line
     toast(on?'🛡️ Modo seguro ATIVADO.':'⚠️ Modo simples ativo.',on?'ok':'err');
   });
   /* ---------- nuvem ---------- */
+  function cfgRefresh(){
+    var raw='';try{raw=localStorage.getItem('neondeals.supabase')||'';}catch(e){}
+    var s={};try{s=JSON.parse(raw||'{}');}catch(e){s={};}
+    if($('#cfg_url')&&!$('#cfg_url').value)$('#cfg_url').value=s.supabaseUrl||((window.NEON_CONFIG||{}).supabaseUrl||'');
+    if($('#cfgState'))$('#cfgState').textContent=s.supabaseKey?'Chave local salva neste navegador (não vai para o git).':'Nenhuma chave local salva — a loja roda em modo local.';
+  }
   function updateCloud(){
     var st=Store.status(),ok=(st.mode==='supabase');
     $('#cloudStatus').innerHTML=ok
@@ -693,6 +709,19 @@ kbd{font-family:'Space Grotesk';background:var(--bg);border:1px solid var(--line
     Store.cloud.downloadAll().then(function(n){render();updateCloud();toast(n+' produto(s) baixado(s) da nuvem.');})
       .catch(function(e){toast('Falha ao baixar: '+e.message,'err');});
   });
+  if($('#cfgSave'))$('#cfgSave').addEventListener('click',function(){
+    var u=($('#cfg_url')&&$('#cfg_url').value||'').trim(),k=($('#cfg_key')&&$('#cfg_key').value||'').trim();
+    if(!u||!k){toast('Preencha URL e chave.','err');return;}
+    try{localStorage.setItem('neondeals.supabase',JSON.stringify({supabaseUrl:u,supabaseKey:k,table:((window.NEON_CONFIG||{}).table||'products')}));}catch(e){toast('Não foi possível salvar.','err');return;}
+    if($('#cfg_key'))$('#cfg_key').value='';
+    toast('Chave salva localmente. Recarregando conexão…');
+    cfgRefresh();Store.init().then(function(){renderAuth();updateCloud();toast('Conexão atualizada.');});
+  });
+  if($('#cfgClear'))$('#cfgClear').addEventListener('click',function(){
+    try{localStorage.removeItem('neondeals.supabase');}catch(e){}
+    cfgRefresh();Store.init().then(function(){renderAuth();updateCloud();toast('Chave local apagada (modo local).');});
+  });
+  cfgRefresh();
 
   /* ---------- login na nuvem ---------- */
   function renderAuth(){
