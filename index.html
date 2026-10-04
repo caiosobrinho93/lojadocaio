@@ -156,11 +156,10 @@ header:after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;
 @media(max-width:700px){.rail{margin:0 -12px;padding:6px 12px 14px}.rail-row{grid-auto-columns:72vw;padding:56px 2px 56px 6px}.rail-row .card{width:72vw}.rail-btn{display:none}.rail:after{width:44px}}
 .kpis{margin-bottom:0}
 .card{--o:0;--mx:50%;--my:50%;position:relative;border-radius:22px;padding:1px;cursor:pointer;display:flex;height:400px;background:linear-gradient(160deg,#2c2c58,#14142a);box-shadow:0 14px 40px rgba(0,0,0,.55),0 26px 70px rgba(0,240,255,calc(.22*var(--o))),0 0 44px rgba(176,77,255,calc(.22*var(--o)));animation:cardIn 1s var(--ease) backwards;will-change:transform;transition:box-shadow .5s var(--ease)}
-/* fallback de elevação quando o tilt 3D (JS) não roda — o JS usa transform inline */
-.card:hover{transform:translateY(-14px)}
+.card:hover{box-shadow:0 5px 20px 5px rgba(0,0,0,.27),0 26px 70px rgba(0,240,255,calc(.3*var(--o))),0 0 54px rgba(176,77,255,calc(.3*var(--o)))}
 .card:before{content:"";position:absolute;inset:0;border-radius:inherit;background:radial-gradient(280px circle at var(--mx) var(--my),var(--c1),var(--c2) 45%,transparent 72%);opacity:var(--o)}
 .inner{position:absolute;inset:1px;background:#0e0e1d;border-radius:21px;overflow:hidden}
-.inner:after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(420px circle at var(--mx) var(--my),rgba(255,255,255,.08),transparent 60%);opacity:var(--o)}
+.inner:after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(420px circle at var(--mx) var(--my),rgba(255,255,255,.14),rgba(0,0,0,.06) 55%,transparent 78%);opacity:var(--o)}
 .pic{position:absolute;inset:0;display:grid;place-items:center;padding-bottom:96px;overflow:hidden}
 .pic:before{content:"";position:absolute;width:220px;height:220px;border-radius:50%;background:rgba(255,255,255,.16);filter:blur(34px);transition:transform .9s var(--ease),opacity .4s}
 .pic .em{font-size:132px;position:relative;z-index:1;filter:drop-shadow(0 14px 22px rgba(0,0,0,.6));transition:transform .9s var(--spring)}
@@ -522,16 +521,38 @@ function lista(){
   return l;
 }
 function tilt(c){
- const A={rx:0,ry:0,ty:0,mx:50,my:50,o:0,sc:0},T={...A};let raf=0;
- const pt=e=>{const r=c.getBoundingClientRect();return[(e.clientX-r.left)/r.width,(e.clientY-r.top)/r.height]};
- const run=()=>{let busy=false;for(const k in A){const d=T[k]-A[k];A[k]+=d*(k[0]==='m'?.24:.13);if(Math.abs(d)>.02)busy=true}
-  c.style.transform=`perspective(900px) translateY(${A.ty}px) rotateX(${A.rx}deg) rotateY(${A.ry}deg) scale(${1+A.sc*.05})`;
-  c.style.setProperty('--o',A.o);c.style.setProperty('--mx',A.mx+'%');c.style.setProperty('--my',A.my+'%');
-  raf=busy?requestAnimationFrame(run):0};
- const go=()=>{if(!raf)raf=requestAnimationFrame(run)};
- c.addEventListener('pointerenter',e=>{const[x,y]=pt(e);A.mx=T.mx=x*100;A.my=T.my=y*100;T.ty=-20;T.sc=1;T.o=1;go()});
- c.addEventListener('pointermove',e=>{const[x,y]=pt(e);T.ry=(x-.5)*26;T.rx=(.5-y)*19;T.mx=x*100;T.my=y*100;go()});
- c.addEventListener('pointerleave',()=>{T.rx=T.ry=T.ty=T.o=T.sc=0;go()})}
+  let b=null;
+  /* estado atual (A) e alvo (T): o loop interpola para suavizar o movimento */
+  const A={ax:0,ay:0,rz:0,sc:0,o:0,mx:50,my:50},T={...A};
+  let raf=0;
+  const run=()=>{
+    let busy=false;
+    for(const k in A){const d=T[k]-A[k];A[k]+=d*((k==='mx'||k==='my')?.24:.13);if(Math.abs(d)>.02)busy=true}
+    /* rotate3d: o eixo vem do offset do cursor, como no original */
+    c.style.transform=`perspective(1200px) translateY(${(-A.sc*10).toFixed(2)}px) scale3d(${1+A.sc*.07},${1+A.sc*.07},1) rotate3d(${A.ax.toFixed(3)},${A.ay.toFixed(3)},0,${A.rz.toFixed(2)}deg)`;
+    c.style.setProperty('--o',A.o.toFixed(3));
+    c.style.setProperty('--mx',A.mx.toFixed(1)+'%');
+    c.style.setProperty('--my',A.my.toFixed(1)+'%');
+    raf=busy?requestAnimationFrame(run):0;
+  };
+  const go=()=>{if(!raf)raf=requestAnimationFrame(run)};
+  const aim=e=>{
+    if(!b)b=c.getBoundingClientRect();
+    const cx=e.clientX-b.left-b.width/2,cy=e.clientY-b.top-b.height/2;
+    const dist=Math.sqrt(cx*cx+cy*cy);
+    /* eixo: o desvio vertical vira eixo X da rotacao (e o inverso no Y) */
+    T.ax=cy/100;T.ay=-cx/100;
+    /* angulo cresce com a distancia do centro; log evita valores absurdos nas bordas.
+       O +1 evita -Infinity quando o cursor esta exatamente no centro. */
+    T.rz=Math.min(Math.log(dist+1)*2,14);
+    T.mx=(e.clientX-b.left)/b.width*100;
+    T.my=(e.clientY-b.top)/b.height*100;
+    go();
+  };
+  c.addEventListener('pointerenter',e=>{b=c.getBoundingClientRect();T.sc=1;T.o=1;aim(e)});
+  c.addEventListener('pointermove',aim);
+  c.addEventListener('pointerleave',()=>{b=null;T.ax=T.ay=T.rz=T.sc=T.o=0;go()});
+}
 function produto(id){
   const p=PRODUCTS.find(x=>x.id===id);if(!p)return location.hash='#/';
   const s=STORES[p.store];
