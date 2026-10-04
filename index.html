@@ -30,23 +30,52 @@ a{color:inherit;text-decoration:none}
 @media(max-width:700px){.wrap{padding:0 12px}.side{grid-template-columns:1fr}}
 header{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:linear-gradient(180deg,rgba(13,13,26,.97),rgba(7,7,13,.85));backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-bottom:1px solid rgba(0,240,255,.16);box-shadow:0 10px 34px rgba(0,0,0,.5)}
 header:after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;background:linear-gradient(90deg,transparent,var(--c1),var(--c2),var(--c3),transparent);opacity:.8}
-.bar{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:16px;height:78px}
-.brand-center{display:flex;flex-direction:column;align-items:center;line-height:1;text-align:center}
+/* logo sempre no centro exato, independente da largura dos lados */
+.bar{position:relative;display:flex;align-items:center;justify-content:space-between;gap:16px;height:78px}
+.brand-center{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;line-height:1;text-align:center;z-index:1}
+.bar-l{display:flex;align-items:center;gap:10px;min-width:0}
 .nav{display:flex;align-items:center;gap:2px;justify-content:flex-start}
+.bar-r{display:flex;align-items:center;justify-content:flex-end;gap:8px}
+.icon-btn{width:40px;height:40px;flex:none;display:grid;place-items:center;border-radius:12px;border:1px solid #26264a;background:rgba(16,16,28,.7);color:var(--txt);cursor:pointer;transition:all .3s var(--ease)}
+.icon-btn:hover{color:var(--c1);border-color:var(--c1);box-shadow:0 0 18px rgba(0,240,255,.25)}
+.icon-btn svg{width:19px;height:19px}
+.burger{display:none}
+/* ---- painel lateral de busca ---- */
+.scrim{position:fixed;inset:0;z-index:28;background:rgba(4,4,10,.6);backdrop-filter:blur(4px);opacity:0;pointer-events:none;transition:opacity .35s var(--ease)}
+.scrim.on{opacity:1;pointer-events:auto}
+.spanel{position:fixed;top:0;right:0;bottom:0;z-index:29;width:min(420px,92vw);display:flex;flex-direction:column;background:rgba(12,12,24,.97);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);border-left:1px solid #26264a;box-shadow:-30px 0 70px rgba(0,0,0,.6);transform:translateX(102%);transition:transform .42s var(--ease);will-change:transform}
+.spanel.on{transform:none}
+.spanel-h{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 18px;border-bottom:1px solid #1d1d38}
+.spanel-h b{font:700 11px Inter;letter-spacing:.14em;text-transform:uppercase;color:var(--c1)}
+.spanel-b{padding:18px;display:flex;flex-direction:column;gap:16px}
+.spanel .sug{top:calc(100% + 8px)}
+/* ---- menu de tela cheia (mobile) ---- */
+.fullmenu{position:fixed;inset:0;z-index:30;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;background:rgba(7,7,13,.97);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);opacity:0;pointer-events:none;transition:opacity .35s var(--ease)}
+.fullmenu.on{opacity:1;pointer-events:auto}
+.fullmenu a{font:700 30px 'Space Grotesk',Inter,sans-serif;letter-spacing:-.02em;padding:12px 22px;border-radius:14px;color:var(--txt);transition:all .3s var(--ease)}
+.fullmenu a:hover,.fullmenu a.on{color:var(--c1);background:rgba(0,240,255,.08)}
+.fullmenu .fm-x{position:absolute;top:14px;right:14px}
 .nav a{position:relative;font:600 14px Inter;color:var(--mut);padding:9px 14px;border-radius:10px;transition:color .3s var(--ease),background .3s var(--ease)}
 .nav a:hover{color:var(--txt);background:rgba(0,240,255,.08)}
 .nav a.on{color:var(--c1)}
 .nav a.on:after{content:"";position:absolute;left:14px;right:14px;bottom:3px;height:2px;border-radius:2px;background:var(--c1);box-shadow:0 0 10px var(--c1)}
 
 
-@media(max-width:980px){.nav{display:none}.bar{grid-template-columns:auto 1fr}.brand-center{order:-1;align-items:flex-start;text-align:left}.hsearch{min-width:0}}
+/* nav some em 980 e o hamburger assume; abaixo de 470 tudo compacta */
+@media(max-width:980px){.nav{display:none}.burger{display:grid}}
+@media(max-width:620px){.bar{height:64px}.logo{font-size:24px}}
+@media(max-width:470px){
+  .bar{height:56px;gap:6px;padding:0 10px}
+  .logo{font-size:19px;letter-spacing:2px}
+  .icon-btn{width:34px;height:34px;border-radius:10px}
+  .icon-btn svg{width:16px;height:16px}
+  .fullmenu a{font-size:24px;padding:10px 18px}
+  .spanel{width:100vw}
+}
 
 .logo{font-weight:700;font-size:30px;letter-spacing:3px;background:linear-gradient(90deg,var(--c1),var(--c2) 50%,var(--c3));-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 14px rgba(0,240,255,.45))}
-.logo-sub{font:600 9px Inter;letter-spacing:4px;color:var(--mut);text-transform:uppercase;margin-top:4px}
-.brand-center{display:flex;flex-direction:column;align-items:center;line-height:1;text-align:center}
-.sbox{flex:none;justify-self:end;max-width:400px;min-width:260px;width:100%;margin-left:0;position:relative}
-@media(max-width:620px){.bar{height:64px}.logo{font-size:24px}.logo-sub{display:none}}
-.hsearch{justify-self:end;display:flex;max-width:520px;margin-left:auto;position:relative}
+
+.sbox{position:relative;width:100%;min-width:0}
 .sbox>svg{position:absolute;left:13px;top:50%;transform:translateY(-50%);width:17px;height:17px;color:var(--mut);pointer-events:none;transition:color .3s}
 .sbox.act>svg{color:var(--c1)}
 .sbox input{width:100%;background:var(--panel);border:1px solid #26264a;border-radius:12px;color:var(--txt);padding:11px 14px 11px 38px;font:inherit;outline:none;transition:all .35s var(--ease)}
@@ -68,7 +97,7 @@ header:after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;
 .sug-i .tx b{display:block;font-size:13.8px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.3}
 .sug-i .tx span{font-size:11.5px;color:var(--mut);display:flex;align-items:center;gap:7px;margin-top:3px}
 .sug-i .tx span i{width:6px;height:6px;border-radius:50%;flex-shrink:0}
-.sug-i .pv{font:800 14px Inter,sans-serif;color:var(--ok);white-space:nowrap;letter-spacing:-.03em;flex-shrink:0}
+.sug-i .pv{font:800 14px Inter,sans-serif;color:#4bb0ff;white-space:nowrap;letter-spacing:-.03em;flex-shrink:0}
 .sug-i mark{background:none;color:var(--c1);font-weight:700}
 .sug-f{padding:11px 14px;border-top:1px solid #22223f;font:600 13px Inter,sans-serif;color:var(--c1);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:background .2s}
 .sug-f:hover{background:rgba(0,240,255,.1)}
@@ -115,7 +144,7 @@ header:after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;
 .grid.sub{padding-bottom:0}
 /* Ofertas do dia: trilho horizontal 10 itens (scroll-snap + fade nas bordas) */
 .rail{position:relative;margin:0 -20px;padding:6px 20px 18px}
-.rail-row{display:grid;grid-auto-flow:column;grid-auto-columns:272px;gap:18px;overflow-x:auto;overflow-y:hidden;padding:24px 2px 14px;scroll-snap-type:x mandatory;scrollbar-width:thin;scrollbar-color:#2b2b55 transparent;overscroll-behavior-x:contain}
+.rail-row{display:grid;grid-auto-flow:column;grid-auto-columns:272px;gap:18px;overflow-x:auto;overflow-y:hidden;padding:70px 2px 70px 14px;scroll-snap-type:x mandatory;scrollbar-width:thin;scrollbar-color:#2b2b55 transparent;overscroll-behavior-x:contain}
 .rail-row::-webkit-scrollbar{height:8px}
 .rail-row::-webkit-scrollbar-thumb{background:#2b2b55;border-radius:99px}
 .rail-row .card{scroll-snap-align:start;width:272px;flex:none}
@@ -124,7 +153,7 @@ header:after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;
 .rail-btn:hover{transform:scale(1.08);box-shadow:0 0 22px rgba(0,240,255,.4)}
 .rail-btn.prev{left:26px}
 .rail-btn.next{right:26px}
-@media(max-width:700px){.rail{margin:0 -12px;padding:6px 12px 14px}.rail-row{grid-auto-columns:72vw;padding:20px 2px 14px}.rail-row .card{width:72vw}.rail-btn{display:none}.rail:after{width:44px}}
+@media(max-width:700px){.rail{margin:0 -12px;padding:6px 12px 14px}.rail-row{grid-auto-columns:72vw;padding:56px 2px 56px 6px}.rail-row .card{width:72vw}.rail-btn{display:none}.rail:after{width:44px}}
 .kpis{margin-bottom:0}
 .card{--o:0;--mx:50%;--my:50%;position:relative;border-radius:22px;padding:1px;cursor:pointer;display:flex;height:400px;background:linear-gradient(160deg,#2c2c58,#14142a);box-shadow:0 14px 40px rgba(0,0,0,.55),0 26px 70px rgba(0,240,255,calc(.22*var(--o))),0 0 44px rgba(176,77,255,calc(.22*var(--o)));animation:cardIn 1s var(--ease) backwards;will-change:transform;transition:box-shadow .5s var(--ease)}
 /* fallback de elevação quando o tilt 3D (JS) não roda — o JS usa transform inline */
@@ -145,13 +174,15 @@ header:after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;
 .pr{display:flex;align-items:baseline;justify-content:flex-start;gap:9px}
 .has .em,.pic.has:before{opacity:0}.big.has .em{display:none}
 .rate{position:absolute;top:8px;right:10px;z-index:3;display:inline-flex;align-items:center;padding:0;background:none;border:0;backdrop-filter:none;font:800 13px Inter;color:#ffd23f;text-shadow:0 1px 8px rgba(0,0,0,.95),0 0 12px rgba(0,0,0,.7)}
-.off{position:absolute;top:0;left:0;z-index:4;display:inline-flex;align-items:center;padding:8px 13px 8px 10px;border-radius:21px 0 12px 0;font:800 12px/1 Inter,system-ui,sans-serif;letter-spacing:-.02em;color:#fff;background:linear-gradient(135deg,#ff2fb3,#ff5f6d);box-shadow:0 8px 18px rgba(255,47,179,.45),inset 0 1px 0 rgba(255,255,255,.4)}
+/* selo de desconto: neutro (grafite/azulado) e, acima de 50%, vinho -> vermelho */
+.off{position:absolute;top:0;left:0;z-index:4;display:inline-flex;align-items:center;padding:8px 13px 8px 10px;border-radius:21px 0 12px 0;font:800 12px/1 Inter,system-ui,sans-serif;letter-spacing:-.02em;color:#fff;background:linear-gradient(135deg,#41313b,#48738d);box-shadow:0 8px 18px rgba(15,193,183,.45),inset -1px -1px 1px 0 rgba(21,167,255,.4)}
+.off.hot{background:linear-gradient(135deg,#4a0d18,#b3122a);box-shadow:0 8px 20px rgba(179,18,42,.55),inset -1px -1px 1px 0 rgba(255,120,120,.45)}
 .store{position:absolute;top:14px;left:14px;z-index:3;transform:translateZ(36px);font:700 11px Inter;padding:5px 10px;border-radius:99px;background:rgba(7,7,13,.8);backdrop-filter:blur(6px);border:1px solid currentColor}
 .body{padding:18px;display:flex;flex-direction:column;gap:12px;flex:1}
 .body h3{margin:0;font-size:16px;line-height:1.35;font-weight:500;min-height:44px}
 .old{color:var(--mut);text-decoration:line-through;font-size:13px}
-.price{font-size:28px;font-weight:700;color:var(--ok);text-shadow:0 0 16px rgba(57,255,136,.45);line-height:1.1}
-.panel .price{font-family:Inter,system-ui,sans-serif;font-weight:800;font-size:21.5px;letter-spacing:-.04em;line-height:1;white-space:nowrap;text-shadow:0 0 20px rgba(57,255,136,.4)}
+.price{font-size:28px;font-weight:700;color:#4bb0ff;text-shadow:0 0 16px rgba(75,176,255,.45);line-height:1.1}
+.panel .price{font-family:Inter,system-ui,sans-serif;font-weight:800;font-size:21.5px;letter-spacing:-.04em;line-height:1;white-space:nowrap;text-shadow:0 0 20px rgba(75,176,255,.4)}
 .panel .was{font:600 12.5px/1 Inter,system-ui,sans-serif;color:var(--mut);text-decoration:line-through;letter-spacing:-.01em;white-space:nowrap;opacity:.85}
 .eco{font-size:12px;color:var(--c1);margin-top:4px}
 .stars{display:flex}
@@ -232,17 +263,45 @@ footer{position:relative;z-index:1;border-top:1px solid #1d1d38;padding:44px 20p
 <body>
 <canvas id="bg"></canvas>
 <header><div class="wrap bar">
-  <nav class="nav">
-    <a href="#/">Início</a>
-    <a href="#/produtos">Ofertas</a>
-  </nav>
-  <a class="brand-center" href="#/" aria-label="NEONS inicio"><span class="logo">NEONS</span><span class="logo-sub">achadinhos</span></a>
-  <div class="sbox hsearch" id="sbox">
+  <div class="bar-l">
+    <nav class="nav">
+      <a href="#/">Início</a>
+      <a href="#/produtos">Ofertas</a>
+    </nav>
+    <button class="icon-btn burger" id="btnMenu" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="fullmenu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    </button>
+  </div>
+  <a class="brand-center" href="#/" aria-label="NEONS inicio"><span class="logo">NEONS</span></a>
+  <div class="bar-r">
+    <button class="icon-btn" id="btnSearch" type="button" aria-label="Abrir busca" aria-expanded="false" aria-controls="spanel">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+    </button>
+  </div>
+</div></header>
+<div class="scrim" id="scrim" hidden></div>
+<aside class="spanel" id="spanel" aria-label="Busca de produtos" aria-hidden="true">
+  <div class="spanel-h"><b>Buscar</b>
+    <button class="icon-btn" id="btnSearchClose" type="button" aria-label="Fechar busca">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+  </div>
+  <div class="spanel-b">
+  <div class="sbox" id="sbox">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
     <input id="q" type="search" placeholder="Buscar produtos..." autocomplete="off" role="combobox" aria-expanded="false" aria-controls="sug" aria-autocomplete="list">
     <div class="sug" id="sug" role="listbox" aria-label="Sugestões de busca"></div>
   </div>
-</div></header>
+  </div>
+</aside>
+<nav class="fullmenu" id="fullmenu" aria-label="Menu principal" aria-hidden="true">
+  <button class="icon-btn fm-x" id="btnMenuClose" type="button" aria-label="Fechar menu">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+  </button>
+  <a href="#/">Início</a>
+  <a href="#/produtos">Ofertas</a>
+  <a href="#/ofertas">Ofertas do dia</a>
+</nav>
 <main class="wrap" id="app"></main>
 <footer>
   <div class="fgrid">
@@ -284,6 +343,39 @@ const STORES=Store.STORES;
 let PRODUCTS=Store.products.list();
 /* ============================================= */
 const $=s=>document.querySelector(s),app=$('#app'),brl=n=>n.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+/* ========= CAMADAS DE NAVEGACAO =========
+   painel lateral de busca (botao na barra) + menu de tela cheia (mobile).
+   Declarado aqui porque rota() fecha as camadas a cada navegacao. */
+const SCRIM=$('#scrim'),SPANEL=$('#spanel'),FMENU=$('#fullmenu');
+let layerOn=null;
+function setLayer(el){
+  if(layerOn===el){closeLayers();return}
+  closeLayers();
+  if(!el)return;
+  layerOn=el;
+  SCRIM.hidden=false;requestAnimationFrame(()=>SCRIM.classList.add('on'));
+  el.classList.add('on');el.setAttribute('aria-hidden','false');
+  $('#'+(el.id==='spanel'?'btnSearch':'btnMenu')).setAttribute('aria-expanded','true');
+  if(el.id==='spanel')setTimeout(()=>{const q=document.getElementById('q');if(q)q.focus()},200);
+}
+function closeLayers(){
+  [SPANEL,FMENU].forEach(x=>{if(x){x.classList.remove('on');x.setAttribute('aria-hidden','true')}});
+  const bs=document.getElementById('btnSearch'),bm=document.getElementById('btnMenu');
+  if(bs)bs.setAttribute('aria-expanded','false');
+  if(bm)bm.setAttribute('aria-expanded','false');
+  const was=layerOn;layerOn=null;
+  SCRIM.classList.remove('on');
+  setTimeout(()=>{if(!layerOn)SCRIM.hidden=true},380);
+  if(was===SPANEL){const q=document.getElementById('q');if(q)q.blur()}
+}
+$('#btnSearch').addEventListener('click',()=>setLayer(SPANEL));
+$('#btnSearchClose').addEventListener('click',closeLayers);
+$('#btnMenu').addEventListener('click',()=>setLayer(FMENU));
+$('#btnMenuClose').addEventListener('click',closeLayers);
+SCRIM.addEventListener('click',closeLayers);
+FMENU.addEventListener('click',e=>{if(e.target.closest('a'))closeLayers()});
+addEventListener('keydown',e=>{if(e.key==='Escape')closeLayers()});
+/* ============================================= */
 /* helpers usados pelo site inteiro (precisa vir ANTES de rota()) */
 const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const norm=s=>String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
@@ -298,7 +390,7 @@ function startRot(){clearInterval(rotT);const ws=[...document.querySelectorAll('
 function sideBanners(){
   return `<aside class="side" aria-label="Publicidade">
     <div class="sbanner tall"><span class="tag">PUBLICIDADE</span><img src="https://picsum.photos/seed/neon-oferta1/400/700" alt="Banner teste 1" loading="lazy"><div class="cta"><b>Oferta da semana</b><span>Banner vertical de teste (20%)</span></div></div>
-    <div class="sbanner tall"><span class="tag">PUBLICIDADE</span><img src="https://picsum.photos/seed/neon-oferta2/400/700" alt="Banner teste 2" loading="lazy"><div class="cta"><b>Neon Deals</b><span>Espaco para anunciante</span></div></div>
+    <div class="sbanner tall"><span class="tag">PUBLICIDADE</span><img src="https://picsum.photos/seed/neon-oferta2/400/700" alt="Banner teste 2" loading="lazy"><div class="cta"><b>NEONS</b><span>Espaco para anunciante</span></div></div>
     <div class="sbanner"><span class="tag">CUPOM</span><img src="https://picsum.photos/seed/neon-oferta3/400/300" alt="Banner teste 3" loading="lazy"><div class="cta"><b>-30% hoje</b><span>Banner de teste</span></div></div>
   </aside>`;
 }
@@ -346,7 +438,7 @@ function home(){
 function card(p,i,step){
   const d=off(p);
   return `<a class="card" href="#/produto/${esc(p.id)}" style="animation-delay:${i*(step||90)}ms"><div class="inner">${pic(p,'pic')}</div></div>
-  ${d>0?`<span class="off">-${d}%</span>`:''}
+  ${d>0?`<span class="off${d>50?' hot':''}">-${d}%</span>`:''}
   <span class="rate">${stars(p.nota)}</span>
   <div class="panel"><h3>${esc(p.nome)}</h3><div class="pr"><span class="price">${brl(p.preco)}</span>${p.de?`<span class="was">${brl(p.de)}</span>`:''}</div></div></a>`;
 }
@@ -449,7 +541,7 @@ function produto(id){
   ${pic(p,'big')}</div>
   <div class="info"><span class="store" style="position:static;color:${s.c};display:inline-block">${s.n}</span>
   <h1>${esc(p.nome)}</h1><div class="stars">${stars(p.nota)}<span style="color:var(--mut);font-size:13px;margin-left:8px">${p.nota.toFixed(1)} · opinião de quem comprou</span></div>
-  <div class="old" style="margin-top:14px">De ${brl(p.de)}${off(p)>0?' <b style="color:var(--c3)">(-'+off(p)+'%)</b>':''}</div>
+  <div class="old" style="margin-top:14px">De ${brl(p.de)}${off(p)>0?` <b style="color:${off(p)>50?'#ff4d5e':'#7fd4ea'}">(-${off(p)}%)</b>`:''}</div>
   <div class="price">${brl(p.preco)}</div>
   <p>${esc(p.desc||'')}</p>
   ${p.specs&&p.specs.length?`<ul class="specs">${p.specs.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:''}
@@ -462,10 +554,12 @@ function produto(id){
   </div></div></section>
   <section class="rel"><div class="sec-h" style="padding-top:150px"><h2>Você também pode gostar</h2></div><div class="grid sub">${relacionados(p).map((x,i)=>card(x,i,70)).join('')}</div></section>
   </div>${sideBanners()}</div>`;
+  tiltCards();
 }
 function rota(){
+  closeLayers();
   const m=location.hash.match(/^#\/produto\/(.+)$/),alvo=location.hash.match(/^#\/(produtos|lojas|ofertas)$/);
-  document.querySelectorAll('.nav a').forEach(a=>a.classList.toggle('on',location.hash===a.getAttribute('href')));
+  document.querySelectorAll('.nav a, .fullmenu a').forEach(a=>a.classList.toggle('on',location.hash===a.getAttribute('href')));
   if(m){produto(m[1]);window.scrollTo(0,0);return;}
   home();window.scrollTo(0,0);
   if(alvo){const el=document.getElementById(alvo[1]);
@@ -521,7 +615,7 @@ function abrirSug(lst,rot){
         return '<div class="sug-i'+(i===0?' sel':'')+'" role="option" data-id="'+esc(p.id)+'" data-i="'+i+'">'
         +thumb(p)
         +'<span class="tx"><b>'+hl(p.nome,rot||'')+'</b>'
-        +'<span><i style="background:'+(s.c||'#888')+'"></i>'+esc(s.n||'')+(off(p)>0?' · <b style="color:#ff2fb3">-'+off(p)+'%</b>':'')+'</span></span>'
+        +'<span><i style="background:'+(s.c||'#888')+'"></i>'+esc(s.n||'')+(off(p)>0?' · <b style="color:'+(off(p)>50?'#ff4d5e':'#7fd4ea')+'">-'+off(p)+'%</b>':'')+'</span></span>'
         +'<span class="pv">'+brl(p.preco)+'</span></div>';}).join('')
       +'</div><div class="sug-f" data-all="1">Ver todos os resultados para "'+esc(rot||'')+'" →</div>';
   }
