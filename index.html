@@ -113,6 +113,18 @@ header:after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;
 .sec-h h2:before{content:"";display:inline-block;width:6px;height:26px;background:var(--c3);box-shadow:0 0 14px var(--c3);border-radius:3px;margin-right:12px;vertical-align:-4px}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:22px;padding-bottom:0}
 .grid.sub{padding-bottom:0}
+/* Ofertas do dia: trilho horizontal 10 itens (scroll-snap + fade nas bordas) */
+.rail{position:relative;margin:0 -20px;padding:6px 20px 18px}
+.rail-row{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(230px,272px);gap:18px;overflow-x:auto;padding:4px 2px 14px;scroll-snap-type:x mandatory;scrollbar-width:thin;scrollbar-color:#2b2b55 transparent;overscroll-behavior-x:contain}
+.rail-row::-webkit-scrollbar{height:8px}
+.rail-row::-webkit-scrollbar-thumb{background:#2b2b55;border-radius:99px}
+.rail-row .card{scroll-snap-align:start}
+.rail:after{content:"";position:absolute;top:0;bottom:0;right:0;width:90px;pointer-events:none;background:linear-gradient(90deg,transparent,rgba(7,7,13,.85))}
+.rail-btn{position:absolute;top:38%;z-index:2;width:44px;height:44px;border-radius:50%;border:1px solid #2b2b55;background:rgba(10,10,22,.85);color:var(--txt);font-size:19px;cursor:pointer;backdrop-filter:blur(8px);transition:transform .25s var(--ease),box-shadow .25s}
+.rail-btn:hover{transform:scale(1.08);box-shadow:0 0 22px rgba(0,240,255,.4)}
+.rail-btn.prev{left:26px}
+.rail-btn.next{right:26px}
+@media(max-width:700px){.rail{margin:0 -12px;padding:6px 12px 14px}.rail-row{grid-auto-columns:minmax(200px,72vw)}.rail-btn{display:none}.rail:after{width:44px}}
 .kpis{margin-bottom:0}
 .card{--o:0;--mx:50%;--my:50%;position:relative;border-radius:22px;padding:1px;cursor:pointer;display:flex;height:400px;background:linear-gradient(160deg,#2c2c58,#14142a);box-shadow:0 14px 40px rgba(0,0,0,.55),0 26px 70px rgba(0,240,255,calc(.22*var(--o))),0 0 44px rgba(176,77,255,calc(.22*var(--o)));animation:cardIn 1s var(--ease) backwards;will-change:transform}
 .card:before{content:"";position:absolute;inset:0;border-radius:inherit;background:radial-gradient(280px circle at var(--mx) var(--my),var(--c1),var(--c2) 45%,transparent 72%);opacity:var(--o)}
@@ -341,8 +353,8 @@ function home(){
     <div class="kpi"><b id="k3">0%</b><span>maior desconto</span></div>
     <div class="kpi"><b id="k4">4</b><span>atualizado hoje</span></div>
   </div>
-  <div class="sec-h" id="ofertas"><h2>🔥 Ofertas do dia</h2><span style="color:var(--mut)">maiores descontos agora</span></div>
-  <div class="grid sub" id="r1"></div>
+  <div class="sec-h" id="ofertas"><h2>🔥 Ofertas do dia</h2><span style="color:var(--mut)">10 maiores descontos — arraste para o lado</span></div>
+  <div class="rail"><button class="rail-btn prev" data-rail="r1" aria-label="Anterior">‹</button><div class="rail-row" id="r1"></div><button class="rail-btn next" data-rail="r1" aria-label="Próximo">›</button></div>
   <div class="sec-h" id="produtos"><h2>Catálogo completo</h2><span style="color:var(--mut)" id="cnt"></span></div>
   <div class="grid" id="grid"></div>
   <div class="sec-h"><h2>⭐ Mais bem avaliados</h2><span style="color:var(--mut)">nota mais alta entre os selecionados</span></div>
@@ -356,6 +368,15 @@ function home(){
   const _ch=$('#chips'); if(_ch)_ch.remove();
   document.body.dataset.nostore='1';
   extras();lista();startRot();
+  /* setas do trilho Ofertas do dia */
+  document.querySelectorAll('.rail-btn').forEach(function(b){
+    b.addEventListener('click',function(){
+      var row=document.getElementById(b.dataset.rail);
+      if(!row)return;
+      var w=row.clientWidth*0.8;
+      row.scrollBy({left:(b.classList.contains('next')?1:-1)*w,behavior:'smooth'});
+    });
+  });
 }
 /* --------- KPIs, carrosséis, banners e newsletter --------- */
 /* card padrao - identico ao do catalogo, reusado em todas as secoes */
@@ -375,7 +396,7 @@ function extras(){
   set('k3',kmax>0?'-'+kmax+'%':'0%');
   set('k4',Object.keys(STORES).length);
   /* carrosséis */
-  const ofertas=[...PRODUCTS].sort((a,b)=>off(b)-off(a)).slice(0,4);
+  const ofertas=[...PRODUCTS].sort((a,b)=>off(b)-off(a)).slice(0,10);
   const top=[...PRODUCTS].sort((a,b)=>b.nota-a.nota||off(b)-off(a)).slice(0,4);
   const r1=document.getElementById('r1'),r2=document.getElementById('r2');
   if(r1)r1.innerHTML=ofertas.map((p,i)=>card(p,i,70)).join('');
