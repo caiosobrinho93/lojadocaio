@@ -3,179 +3,436 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>NeonDeals — Painel de Administração</title>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<meta name="robots" content="noindex, nofollow">
+<title>Painel · Loja do Caio</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-*{box-sizing:border-box}
-:root{--bg:#07070d;--panel:#10101c;--panel2:#161628;--txt:#eef0ff;--mut:#8b8fb0;--c1:#00f0ff;--c2:#b04dff;--c3:#ff2fb3;--ok:#39ff88;--line:#26264a;--ease:cubic-bezier(.22,1,.36,1)}
-body{margin:0;background:var(--bg);color:var(--txt);font-family:Inter,system-ui,sans-serif;min-height:100vh}
-h1,h2,h3,.logo,.btn{font-family:'Space Grotesk',Inter,sans-serif}
+*,*::before,*::after{box-sizing:border-box}
+:root{
+  --bg:#06060c; --panel:#0d0d18; --panel2:#121224; --raise:#161630;
+  --txt:#eef0ff; --mut:#8b8fb0; --dim:#5d6182;
+  --c1:#00f0ff; --c2:#b04dff; --c3:#ff2fb3; --ok:#39ff88; --warn:#ffd23f;
+  --line:rgba(255,255,255,.08); --line2:rgba(0,240,255,.22);
+  --r1:14px; --r2:20px; --r3:26px;
+  --sh:0 18px 40px rgba(0,0,0,.45);
+  --ease:cubic-bezier(.22,1,.36,1);
+}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;min-height:100vh;background:var(--bg);color:var(--txt);
+  font-family:Inter,system-ui,-apple-system,sans-serif;font-size:15px;line-height:1.5;
+  background-image:
+    radial-gradient(700px 380px at 12% -8%,rgba(0,240,255,.16),transparent 60%),
+    radial-gradient(760px 420px at 88% -12%,rgba(176,77,255,.18),transparent 62%),
+    radial-gradient(900px 700px at 50% 120%,rgba(255,47,179,.10),transparent 60%);
+  background-attachment:fixed;
+}
+h1,h2,h3,h4,.brand,.num{font-family:'Space Grotesk',Inter,sans-serif}
 a{color:inherit;text-decoration:none}
-.wrap{max-width:1100px;margin:0 auto;padding:0 20px}
-header.top{position:sticky;top:0;z-index:5;background:rgba(7,7,13,.82);backdrop-filter:blur(14px);border-bottom:1px solid rgba(0,240,255,.15)}
-.bar{display:flex;align-items:center;gap:14px;height:64px}
-.logo{font-weight:700;font-size:20px;color:var(--c1);text-shadow:0 0 12px var(--c1)}
-.logo span{color:var(--c3);text-shadow:0 0 12px var(--c3)}
-.badge{font:600 12px Inter;padding:4px 10px;border:1px solid var(--c2);border-radius:99px;color:var(--c2);box-shadow:0 0 14px rgba(176,77,255,.35)}
-.spacer{flex:1}
-.ghost-link{background:none;border:0;color:var(--mut);font:600 14px Inter;cursor:pointer;padding:8px;transition:color .3s}
-.ghost-link:hover{color:var(--c1)}
-.btn{display:inline-flex;align-items:center;gap:8px;padding:11px 18px;border-radius:12px;border:0;cursor:pointer;font:700 14px 'Space Grotesk';color:#05050a;background:linear-gradient(90deg,var(--c1),var(--c2));box-shadow:0 0 22px rgba(0,240,255,.35);transition:transform .3s var(--ease),box-shadow .3s var(--ease)}
-.btn:hover{transform:translateY(-2px);box-shadow:0 0 34px rgba(176,77,255,.6)}
-.btn.ghost{background:transparent;color:var(--c1);border:1px solid var(--c1);box-shadow:none}
-.btn.danger{background:linear-gradient(90deg,var(--c3),#ff5f6d);color:#fff}
-.btn.mini{padding:8px 12px;font-size:13px}
-.tabs{display:flex;gap:8px;margin:24px 0 18px}
-.tab{padding:10px 18px;border-radius:99px;background:var(--panel);border:1px solid var(--line);color:var(--mut);cursor:pointer;font:600 14px Inter;transition:all .3s var(--ease)}
-.tab.on{color:#05050a;background:var(--c1);border-color:var(--c1);box-shadow:0 0 18px rgba(0,240,255,.5)}
-.toolbar{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:16px}
-input,select,textarea{background:var(--panel);border:1px solid var(--line);border-radius:10px;color:var(--txt);padding:10px 12px;font:inherit;outline:none;transition:border-color .3s,box-shadow .3s;width:100%}
-input:focus,select:focus,textarea:focus{border-color:var(--c1);box-shadow:0 0 0 3px rgba(0,240,255,.14)}
-#busca{max-width:320px}
-.mut{color:var(--mut);font-size:13px}
-.lista{display:grid;gap:12px;padding-bottom:60px}
-.row{display:grid;grid-template-columns:64px 1fr auto;gap:14px;align-items:center;background:linear-gradient(160deg,#141428,#0e0e1d);border:1px solid var(--line);border-radius:16px;padding:12px}
-.thumb{width:64px;height:64px;border-radius:12px;display:grid;place-items:center;font-size:32px;overflow:hidden;border:1px solid rgba(255,255,255,.12)}
-.thumb img{width:100%;height:100%;object-fit:cover}
-.row .info{min-width:0}
-.row .nome{font-weight:600;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.row .sub{font-size:13px;color:var(--mut);margin-top:4px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-.chipstore{font:700 11px Inter;padding:2px 8px;border-radius:99px;border:1px solid currentColor}
-.row .acts{display:flex;gap:8px}
-.empty{text-align:center;color:var(--mut);padding:50px 0}
-.gate{position:fixed;inset:0;display:grid;place-items:center;background:radial-gradient(600px at 50% 0%,rgba(176,77,255,.18),transparent),var(--bg);z-index:20;padding:20px}
-.gate-box{width:min(380px,90vw);background:linear-gradient(160deg,#141428,#0d0d1c);border:1px solid rgba(0,240,255,.3);border-radius:20px;padding:28px;display:flex;flex-direction:column;gap:14px;box-shadow:0 0 50px rgba(0,240,255,.15)}
-.gate-box h2{margin:0}
-.err{color:var(--c3);font-size:13px;min-height:16px}
-.modal{position:fixed;inset:0;display:grid;place-items:center;background:rgba(4,4,10,.72);backdrop-filter:blur(6px);z-index:30;padding:20px;overflow:auto}
-.modal-box{width:min(660px,96vw);max-height:92vh;overflow:auto;background:linear-gradient(160deg,#141428,#0d0d1c);border:1px solid rgba(0,240,255,.25);border-radius:20px;padding:26px;display:flex;flex-direction:column;gap:14px;box-shadow:0 0 60px rgba(176,77,255,.25)}
-.modal-box h2{margin:0}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
-label{display:flex;flex-direction:column;gap:6px;font-size:13px;color:var(--mut);font-weight:600}
-.actions{display:flex;justify-content:flex-end;gap:10px;margin-top:6px;flex-wrap:wrap}
-.colorin{height:44px;padding:4px;cursor:pointer}
-.sec{background:linear-gradient(160deg,#141428,#0e0e1d);border:1px solid var(--line);border-radius:16px;padding:20px;margin-bottom:16px;display:flex;flex-direction:column;gap:12px}
-.sec h3{margin:0;display:flex;align-items:center;gap:10px}
+button,input,select,textarea{font:inherit;color:inherit}
+::selection{background:rgba(176,77,255,.4)}
+.wrap{width:100%;max-width:1180px;margin:0 auto;padding:0 22px}
 .hide{display:none!important}
-.file{color:var(--mut);font-size:13px}
-.preview{width:70px;height:70px;border-radius:12px;border:1px solid var(--line);display:grid;place-items:center;font-size:34px;overflow:hidden;flex:0 0 auto}
-.preview img{width:100%;height:100%;object-fit:cover}
-@media(max-width:640px){.grid2,.grid3{grid-template-columns:1fr}.row{grid-template-columns:56px 1fr}.thumb{width:56px;height:56px}.row .acts{grid-column:1/-1;justify-content:flex-end}}
+
+/* ---- header ---- */
+.top{position:sticky;top:0;z-index:40;backdrop-filter:blur(16px);
+  background:rgba(6,6,12,.72);border-bottom:1px solid var(--line)}
+.top .bar{display:flex;align-items:center;gap:14px;min-height:70px;flex-wrap:wrap;padding:8px 0}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:19px;letter-spacing:.4px}
+.brand .dot{width:10px;height:10px;border-radius:50%;background:var(--c1);box-shadow:0 0 12px var(--c1);animation:pulse 2.4s infinite}
+.brand b{color:var(--c1);text-shadow:0 0 14px rgba(0,240,255,.6)}
+.brand span{color:var(--c3);text-shadow:0 0 14px rgba(255,47,179,.5)}
+.brand small{display:block;font-family:Inter;font-size:10.5px;font-weight:600;letter-spacing:.16em;color:var(--dim);text-transform:uppercase}
+.nav{display:flex;gap:4px;padding:4px;background:var(--panel);border:1px solid var(--line);border-radius:99px;margin-left:6px}
+.nav button{border:0;background:transparent;color:var(--mut);padding:9px 18px;border-radius:99px;
+  font-weight:600;font-size:14px;cursor:pointer;transition:.28s var(--ease);white-space:nowrap}
+.nav button:hover{color:var(--txt)}
+.nav button.on{background:linear-gradient(135deg,var(--c1),var(--c2));color:#05050a;box-shadow:0 6px 18px rgba(0,240,255,.35)}
+.spacer{flex:1 1 auto;min-width:8px}
+.pill{display:inline-flex;align-items:center;gap:7px;padding:7px 13px;border-radius:99px;
+  font-size:12.5px;font-weight:600;border:1px solid var(--line2);color:var(--c1);
+  background:rgba(0,240,255,.07);white-space:nowrap}
+.pill.ok{border-color:rgba(57,255,136,.4);color:var(--ok);background:rgba(57,255,136,.08)}
+.pill.bad{border-color:rgba(255,47,179,.4);color:var(--c3);background:rgba(255,47,179,.08)}
+.pill i{width:7px;height:7px;border-radius:50%;background:currentColor;box-shadow:0 0 8px currentColor}
+.icon-link{display:inline-flex;align-items:center;gap:7px;padding:9px 15px;border-radius:12px;
+  border:1px solid var(--line);background:var(--panel2);color:var(--mut);font-weight:600;font-size:13.5px;
+  cursor:pointer;transition:.28s var(--ease)}
+.icon-link:hover{color:var(--txt);border-color:var(--line2);transform:translateY(-1px)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+
+/* ---- layout ---- */
+main{padding:30px 0 70px}
+.view{display:none;animation:fade .4s var(--ease)}
+.view.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:20px}
+.head h1{margin:0;font-size:27px;letter-spacing:-.02em}
+.head p{margin:5px 0 0;color:var(--mut);font-size:14px}
+
+/* ---- stats ---- */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+.stat{position:relative;overflow:hidden;padding:18px;border-radius:var(--r2);
+  background:linear-gradient(160deg,var(--panel2),var(--panel));border:1px solid var(--line);
+  box-shadow:var(--sh);transition:.32s var(--ease)}
+.stat:hover{transform:translateY(-4px);border-color:var(--line2)}
+.stat::after{content:"";position:absolute;top:-44px;right:-44px;width:130px;height:130px;border-radius:50%;
+  background:radial-gradient(circle,var(--acc,rgba(0,240,255,.4)),transparent 70%);opacity:.5}
+.stat .lbl{position:relative;z-index:1;font-size:11.5px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--dim)}
+.stat .num{position:relative;z-index:1;margin-top:6px;font-size:29px;font-weight:700;color:var(--acc,var(--c1));line-height:1}
+.stat .sub{position:relative;z-index:1;margin-top:6px;font-size:12.5px;color:var(--mut)}
+/* ---- card / toolbar ---- */
+.card{background:linear-gradient(160deg,var(--panel2),var(--panel));border:1px solid var(--line);
+  border-radius:var(--r3);box-shadow:var(--sh);overflow:hidden}
+.toolbar{display:flex;gap:12px;align-items:center;flex-wrap:wrap;padding:16px;border-bottom:1px solid var(--line)}
+.search{position:relative;flex:1 1 240px;max-width:330px}
+.search svg{position:absolute;left:13px;top:50%;transform:translateY(-50%);width:17px;height:17px;color:var(--dim)}
+.search input{width:100%;padding:11px 14px 11px 39px;border-radius:12px;background:var(--bg);
+  border:1px solid var(--line);outline:none;transition:.3s var(--ease);font-size:14px}
+.search input::placeholder{color:var(--dim)}
+.search input:focus{border-color:var(--c1);box-shadow:0 0 0 3px rgba(0,240,255,.14)}
+.chips{display:flex;gap:7px;flex-wrap:wrap}
+.chip{padding:8px 14px;border-radius:99px;background:var(--bg);border:1px solid var(--line);
+  color:var(--mut);font-size:13px;font-weight:600;cursor:pointer;transition:.28s var(--ease)}
+.chip:hover{color:var(--txt);border-color:var(--line2)}
+.chip.on{background:linear-gradient(135deg,var(--c1),var(--c2));color:#05050a;border-color:transparent;box-shadow:0 6px 16px rgba(0,240,255,.3)}
+
+/* ---- botões ---- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 20px;border-radius:12px;
+  border:0;cursor:pointer;font-weight:700;font-size:14.5px;font-family:'Space Grotesk',Inter,sans-serif;
+  color:#05050a;background:linear-gradient(135deg,var(--c1),var(--c2));
+  box-shadow:0 10px 26px rgba(0,240,255,.28);transition:.3s var(--ease);white-space:nowrap}
+.btn:hover{transform:translateY(-2px);box-shadow:0 16px 34px rgba(176,77,255,.4)}
+.btn:active{transform:translateY(0) scale(.98)}
+.btn.ghost{background:transparent;color:var(--c1);border:1px solid var(--line2);box-shadow:none}
+.btn.ghost:hover{background:rgba(0,240,255,.1);box-shadow:0 8px 22px rgba(0,240,255,.18)}
+.btn.danger{background:linear-gradient(135deg,var(--c3),#ff5f6d);color:#fff;box-shadow:0 10px 26px rgba(255,47,179,.28)}
+.btn.warn{background:linear-gradient(135deg,var(--warn),#ff9f43);color:#1a1200}
+.btn.sm{padding:8px 13px;font-size:13px;border-radius:10px}
+.btn[disabled]{opacity:.42;cursor:not-allowed;transform:none!important;box-shadow:none!important}
+.btn .ic{font-size:15px;line-height:1}
+
+/* ---- lista de produtos ---- */
+.thead,.row{display:grid;grid-template-columns:56px minmax(0,1fr) 130px 100px 132px;gap:16px;align-items:center}
+.thead{padding:11px 18px;background:rgba(0,0,0,.28);border-bottom:1px solid var(--line);
+  font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
+.rows{max-height:none}
+.row{padding:13px 18px;border-bottom:1px solid var(--line);transition:.26s var(--ease);position:relative}
+.row:last-child{border-bottom:0}
+.row:hover{background:rgba(0,240,255,.045)}
+.row::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:transparent;transition:.26s}
+.row:hover::before{background:linear-gradient(var(--c1),var(--c2))}
+.thumb{width:52px;height:52px;border-radius:14px;display:grid;place-items:center;font-size:26px;
+  overflow:hidden;border:1px solid rgba(255,255,255,.14);box-shadow:0 8px 18px rgba(0,0,0,.4)}
+.thumb img{width:100%;height:100%;object-fit:cover}
+.pname{font-weight:600;font-size:14.6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pmeta{display:flex;gap:8px;align-items:center;margin-top:4px;flex-wrap:wrap}
+.tag{display:inline-flex;align-items:center;gap:5px;padding:2.5px 9px;border-radius:99px;
+  font-size:11px;font-weight:700;border:1px solid currentColor}
+.pid{font-size:11.5px;color:var(--dim);font-family:'Space Grotesk',monospace}
+.money{font-family:'Space Grotesk';font-weight:700;font-size:16px;color:var(--ok);
+  text-shadow:0 0 16px rgba(57,255,136,.3)}
+.was{font-size:12px;color:var(--dim);text-decoration:line-through}
+.rate{display:inline-flex;align-items:center;gap:5px;color:var(--warn);font-weight:700;font-size:13.5px}
+.rate svg{width:15px;height:15px}
+.acts{display:flex;gap:7px;justify-content:flex-end}
+.mini{padding:7px 11px;font-size:12.5px;border-radius:9px;border:1px solid var(--line);
+  background:var(--bg);color:var(--mut);cursor:pointer;font-weight:600;transition:.24s var(--ease)}
+.mini:hover{color:var(--txt);border-color:var(--line2);transform:translateY(-1px)}
+.mini.del:hover{color:#fff;background:rgba(255,47,179,.18);border-color:rgba(255,47,179,.55)}
+.empty{padding:56px 20px;text-align:center;color:var(--mut)}
+.empty .big{font-size:38px;display:block;margin-bottom:8px;opacity:.75}
+/* ---- seções / formulários ---- */
+.sec{background:linear-gradient(160deg,var(--panel2),var(--panel));border:1px solid var(--line);
+  border-radius:var(--r2);padding:22px;margin-bottom:18px;box-shadow:var(--sh)}
+.sec h3{margin:0 0 4px;font-size:17px;display:flex;align-items:center;gap:10px}
+.sec h3 .em{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;font-size:17px;
+  background:rgba(0,240,255,.12);border:1px solid var(--line2)}
+.sec .hint{margin:0 0 16px;color:var(--mut);font-size:13.4px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+label{display:flex;flex-direction:column;gap:7px;font-size:12.5px;font-weight:600;color:var(--mut);letter-spacing:.02em}
+input[type=text],input[type=email],input[type=password],input[type=number],input[type=search],select,textarea{
+  width:100%;padding:11px 13px;border-radius:12px;background:var(--bg);border:1px solid var(--line);
+  outline:none;font-size:14.4px;transition:.3s var(--ease);resize:vertical}
+input::placeholder,textarea::placeholder{color:var(--dim)}
+input:focus,select:focus,textarea:focus{border-color:var(--c1);box-shadow:0 0 0 3px rgba(0,240,255,.14);background:#0a0a14}
+input[type=color]{width:100%;height:44px;padding:5px;border-radius:12px;background:var(--bg);
+  border:1px solid var(--line);cursor:pointer}
+.switch{display:flex;align-items:flex-start;gap:13px;cursor:pointer;padding:14px;border-radius:14px;
+  background:var(--bg);border:1px solid var(--line);transition:.3s var(--ease)}
+.switch:hover{border-color:var(--line2)}
+.switch input{display:none}
+.switch .track{flex:0 0 auto;width:46px;height:26px;border-radius:99px;background:var(--panel2);
+  border:1px solid var(--line);position:relative;transition:.3s var(--ease);margin-top:2px}
+.switch .track::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;
+  background:var(--dim);transition:.3s var(--ease)}
+.switch input:checked + .track{background:linear-gradient(135deg,var(--c1),var(--c2));border-color:transparent}
+.switch input:checked + .track::after{left:23px;background:#05050a}
+.switch .txt b{display:block;color:var(--txt);font-size:14px}
+.switch .txt span{display:block;color:var(--mut);font-size:12.6px;font-weight:400;margin-top:3px}
+.banner{display:flex;gap:11px;padding:13px 15px;border-radius:14px;margin-bottom:14px;font-size:13.4px;
+  border:1px solid rgba(255,210,63,.35);background:rgba(255,210,63,.08);color:#ffe6a3}
+.banner.bad{border-color:rgba(255,47,179,.35);background:rgba(255,47,179,.08);color:#ffc9e8}
+.banner b{color:#fff}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+.actions.end{justify-content:flex-end}
+
+/* ---- modal ---- */
+.overlay{position:fixed;inset:0;z-index:60;display:flex;align-items:center;justify-content:center;padding:22px;
+  background:rgba(3,3,9,.74);backdrop-filter:blur(9px);animation:fade .25s var(--ease);overflow:auto}
+.overlay.hide{display:none!important}
+.modal{width:min(700px,100%);max-height:92vh;display:flex;flex-direction:column;
+  background:linear-gradient(160deg,#15152e,#0b0b18);border:1px solid var(--line2);border-radius:var(--r3);
+  box-shadow:0 40px 90px rgba(0,0,0,.7),0 0 60px rgba(176,77,255,.18);animation:pop .34s var(--ease)}
+@keyframes pop{from{opacity:0;transform:translateY(22px) scale(.97)}to{opacity:1;transform:none}}
+.mhead{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:20px 24px;
+  border-bottom:1px solid var(--line)}
+.mhead h2{margin:0;font-size:19px}
+.mhead .x{width:34px;height:34px;border-radius:10px;border:1px solid var(--line);background:var(--bg);
+  color:var(--mut);cursor:pointer;font-size:17px;line-height:1;transition:.24s}
+.mhead .x:hover{color:#fff;border-color:rgba(255,47,179,.5);background:rgba(255,47,179,.14)}
+.mbody{padding:22px 24px;overflow:auto;display:flex;flex-direction:column;gap:16px}
+.mfoot{display:flex;justify-content:flex-end;gap:11px;padding:18px 24px;border-top:1px solid var(--line);
+  background:rgba(0,0,0,.22);position:sticky;bottom:0}
+.divider{display:flex;align-items:center;gap:12px;color:var(--dim);font-size:11.5px;font-weight:700;
+  letter-spacing:.12em;text-transform:uppercase}
+.divider::after{content:"";flex:1;height:1px;background:var(--line)}
+.prev{display:flex;gap:15px;align-items:center;padding:14px;border-radius:16px;background:var(--bg);
+  border:1px dashed var(--line)}
+.prev .box{width:78px;height:78px;border-radius:16px;display:grid;place-items:center;font-size:36px;
+  overflow:hidden;flex:0 0 auto;border:1px solid var(--line);background:linear-gradient(135deg,#1b2a6b,#6b1b8f)}
+.prev .box img{width:100%;height:100%;object-fit:cover}
+/* ---- toast ---- */
+#toasts{position:fixed;right:20px;bottom:20px;z-index:90;display:flex;flex-direction:column;gap:10px;
+  max-width:min(370px,calc(100vw - 40px))}
+.toast{display:flex;gap:11px;align-items:flex-start;padding:13px 15px;border-radius:14px;font-size:13.6px;
+  background:linear-gradient(160deg,#16162e,#0d0d1c);border:1px solid var(--line2);color:var(--txt);
+  box-shadow:0 20px 40px rgba(0,0,0,.55);animation:slideIn .35s var(--ease)}
+.toast.ok{border-color:rgba(57,255,136,.45);box-shadow:0 20px 40px rgba(0,0,0,.55),0 0 22px rgba(57,255,136,.16)}
+.toast.err{border-color:rgba(255,47,179,.5);box-shadow:0 20px 40px rgba(0,0,0,.55),0 0 22px rgba(255,47,179,.16)}
+.toast .ic{font-size:16px;line-height:1.3}
+.toast.out{animation:slideOut .3s var(--ease) forwards}
+@keyframes slideIn{from{opacity:0;transform:translateX(40px)}}
+@keyframes slideOut{to{opacity:0;transform:translateX(40px)}}
+
+/* ---- gate ---- */
+.gate{position:fixed;inset:0;z-index:80;display:grid;place-items:center;padding:22px;
+  background:radial-gradient(700px 500px at 50% 0%,rgba(176,77,255,.2),transparent),var(--bg)}
+.gate.hide{display:none!important}
+.gate-box{width:min(400px,100%);padding:32px;border-radius:var(--r3);
+  background:linear-gradient(160deg,#15152e,#0b0b18);border:1px solid var(--line2);
+  box-shadow:0 40px 90px rgba(0,0,0,.7),0 0 70px rgba(0,240,255,.14);animation:pop .4s var(--ease);
+  display:flex;flex-direction:column;gap:14px;text-align:center}
+.gate-box .lock{width:62px;height:62px;margin:0 auto;border-radius:20px;display:grid;place-items:center;
+  font-size:30px;background:linear-gradient(135deg,rgba(0,240,255,.18),rgba(176,77,255,.18));
+  border:1px solid var(--line2);box-shadow:0 0 34px rgba(0,240,255,.24)}
+.gate-box h2{margin:4px 0 0;font-size:22px}
+.gate-box p{margin:0;color:var(--mut);font-size:13.6px}
+.gate-box input{text-align:center}
+.err{min-height:17px;font-size:12.8px;color:var(--c3);font-weight:600}
+.tiny{font-size:11.6px;color:var(--dim)}
+kbd{font-family:'Space Grotesk';background:var(--bg);border:1px solid var(--line);border-radius:6px;
+  padding:1px 6px;font-size:11.5px;color:var(--c1)}
+
+/* ---- responsivo ---- */
+@media(max-width:940px){.stats{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:860px){
+  .thead{display:none}
+  .row{grid-template-columns:52px minmax(0,1fr);gap:13px;padding:14px}
+  .row .c-price,.row .c-rate{grid-column:2}
+  .row .acts{grid-column:1/-1;justify-content:flex-start}
+  .grid3{grid-template-columns:1fr 1fr}
+  .nav{order:3;width:100%;margin:0;overflow:auto}
+}
+@media(max-width:560px){
+  .grid2,.grid3{grid-template-columns:1fr}
+  .stats{grid-template-columns:1fr 1fr;gap:11px}
+  .stat .num{font-size:24px}
+  .head h1{font-size:22px}
+  .wrap{padding:0 15px}
+  .mbody,.mhead,.mfoot{padding-left:17px;padding-right:17px}
+}
 </style>
 </head>
 <body>
 <header class="top"><div class="wrap bar">
-  <a class="logo" href="index.html">NEON<span>DEALS</span></a>
-  <span class="badge">Painel</span>
-  <span class="badge" id="cloudBadge">…</span>
+  <a class="brand" href="index.html"><span class="dot"></span><span><b>NEON</b><span>DEALS</span><small>Painel de controle</small></span></a>
+  <nav class="nav">
+    <button class="on" data-tab="produtos" type="button">Produtos</button>
+    <button data-tab="identidade" type="button">Ajustes</button>
+  </nav>
   <div class="spacer"></div>
-  <a class="ghost-link" href="index.html" target="_blank">Ver loja ↗</a>
-  <button id="logout" class="ghost-link">Sair</button>
+  <span class="pill" id="cloudBadge"><i></i><span id="cloudBadgeTxt">…</span></span>
+  <a class="icon-link" href="index.html" target="_blank" rel="noopener">↗ Ver loja</a>
+  <button id="logout" class="icon-link" type="button">Sair</button>
 </div></header>
 
 <section id="gate" class="gate hide">
   <form class="gate-box" id="gateForm">
+    <div class="lock">🔐</div>
     <h2>Acesso ao painel</h2>
-    <p class="mut" style="margin:0">Digite a senha para gerenciar os produtos da loja.</p>
+    <p>Gerencie produtos, preços e a identidade da sua loja.</p>
     <input id="gatePass" type="password" placeholder="Senha" autocomplete="current-password">
-    <button class="btn" type="submit" style="justify-content:center">Entrar</button>
     <div id="gateErr" class="err"></div>
-    <p class="mut" style="margin:0;font-size:12px">Senha padrão: <b>admin</b> (troque na aba “Identidade”).</p>
+    <button class="btn" type="submit" style="width:100%">Entrar no painel</button>
+    <p class="tiny">Senha padrão: <kbd>admin</kbd> — troque na aba Ajustes.</p>
   </form>
 </section>
 
-<main id="panel" class="wrap hide">
-<div class="tabs">
-  <button class="tab on" data-tab="produtos">Produtos</button>
-  <button class="tab" data-tab="identidade">Identidade</button>
+<main class="wrap">
+<section id="tab-produtos" class="view on">
+  <div class="head">
+    <div>
+      <h1>Produtos</h1>
+      <p id="cnt">Carregando…</p>
+    </div>
+    <button id="novo" class="btn" type="button"><span class="ic">＋</span> Novo produto</button>
+  </div>
+
+  <div class="stats" id="stats"></div>
+
+  <div class="card">
+    <div class="toolbar">
+      <div class="search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.6-3.6"/></svg>
+        <input id="busca" type="search" placeholder="Buscar por nome ou id…">
+      </div>
+      <div class="chips" id="chips"></div>
+    </div>
+    <div class="thead"><span></span><span>Produto</span><span>Preço</span><span>Nota</span><span style="text-align:right">Ações</span></div>
+    <div id="lista" class="rows"></div>
+  </div>
+</section>
+
+<section id="tab-identidade" class="view">
+<div class="head">
+  <div>
+    <h1>Ajustes</h1>
+    <p>Identidade da loja, segurança e sincronização.</p>
+  </div>
+  <a class="btn ghost" href="https://lojadocaio.vercel.app/" target="_blank" rel="noopener">Ver site online ↗</a>
 </div>
 
-<section id="tab-produtos" class="tabpane">
-  <div class="toolbar">
-    <input id="busca" type="search" placeholder="Buscar produto…">
-    <button id="novo" class="btn" type="button">+ Novo produto</button>
-    <span id="cont" class="mut"></span>
+<form class="sec" id="identForm">
+  <h3><span class="em">🏷️</span> Identidade da loja</h3>
+  <p class="hint">O que aparece no topo e no rodapé do site público.</p>
+  <div class="grid2">
+    <label>Nome — parte 1<input id="s_brandA" type="text" placeholder="NEON"></label>
+    <label>Nome — parte 2<input id="s_brandB" type="text" placeholder="DEALS"></label>
   </div>
-  <div id="lista" class="lista"></div>
-</section>
+  <label style="margin-top:14px">Texto do rodapé<textarea id="s_footer" rows="3"></textarea></label>
+  <div class="actions"><button class="btn" type="submit">Salvar identidade</button></div>
+</form>
 
-<section id="tab-identidade" class="tabpane hide">
-  <form class="sec" id="identForm">
-    <h3>Identidade da loja</h3>
-    <div class="grid2">
-      <label>Nome (parte 1)<input id="s_brandA" placeholder="NEON"></label>
-      <label>Nome (parte 2)<input id="s_brandB" placeholder="DEALS"></label>
-    </div>
-    <label>Texto do rodapé<textarea id="s_footer" rows="3"></textarea></label>
-    <div class="actions"><button class="btn" type="submit">Salvar identidade</button></div>
-  </form>
-  <form class="sec" id="passForm">
-    <h3>Senha do painel</h3>
+<form class="sec" id="passForm">
+  <h3><span class="em">🔑</span> Senha do painel</h3>
+  <p class="hint">Protege a tela de entrada deste painel (não é a proteção do banco).</p>
+  <div class="grid2">
     <label>Nova senha<input id="p_new" type="text" placeholder="Nova senha"></label>
-    <div class="actions"><button class="btn" type="submit">Trocar senha</button></div>
-  </form>
-  <div class="sec">
-    <h3>Backup &amp; dados</h3>
-    <p class="mut" style="margin:0">Os dados ficam salvos neste navegador. Exporte um backup para não perder nada ou importe em outro computador.</p>
-    <div class="actions" style="justify-content:flex-start">
-      <button id="exportBtn" class="btn ghost" type="button">Exportar JSON</button>
-      <label class="btn ghost" style="flex-direction:row;align-items:center;cursor:pointer;margin:0">Importar JSON<input id="importFile" type="file" accept="application/json,.json" class="hide"></label>
-      <button id="resetBtn" class="btn danger" type="button">Restaurar original</button>
-    </div>
+    <label>&nbsp;<span class="tiny" style="margin-top:14px;display:block">Mínimo de 3 caracteres.</span></label>
   </div>
-  <div class="sec">
-    <h3>Nuvem (Supabase)</h3>
-    <p class="mut" id="cloudStatus" style="margin:0">Verificando conexão…</p>
-    <div class="actions" style="justify-content:flex-start">
-      <button id="upBtn" class="btn" type="button">Enviar produtos para a nuvem</button>
-      <button id="downBtn" class="btn ghost" type="button">Baixar da nuvem</button>
-    </div>
-    <p class="mut" style="margin:0;font-size:12px">Primeira vez? Rode o <code>supabase-schema.sql</code> no SQL Editor do Supabase para criar a tabela. Depois clique em “Enviar produtos para a nuvem”.</p>
+  <div class="actions"><button class="btn ghost" type="submit">Trocar senha</button></div>
+</form>
+
+<div class="sec">
+  <h3><span class="em">🛡️</span> Segurança — RLS protegido</h3>
+  <p class="hint">Ative para que <b>só usuários logados</b> consigam alterar produtos no banco.</p>
+
+  <div id="secureState"></div>
+
+  <label class="switch" for="secureMode">
+    <input type="checkbox" id="secureMode">
+    <span class="track"></span>
+    <span class="txt"><b>Exigir login para editar (modo seguro)</b>
+      <span>Ligue <b>só depois</b> de rodar <code>supabase-security.sql</code> e criar o usuário. Desligado = funciona sem login (RLS aberto).</span></span>
+  </label>
+
+  <div class="divider" style="margin-top:18px">Login na nuvem</div>
+  <div id="authBox"></div>
+</div>
+
+<div class="sec">
+  <h3><span class="em">☁️</span> Nuvem (Supabase)</h3>
+  <div id="cloudStatus" class="hint">Verificando conexão…</div>
+  <div class="actions" style="margin-top:0">
+    <button id="upBtn" class="btn ghost" type="button">⬆ Enviar produtos para a nuvem</button>
+    <button id="downBtn" class="btn ghost" type="button">⬇ Baixar da nuvem</button>
   </div>
-  <div class="sec">
-    <h3>Segurança — login na nuvem</h3>
-    <div id="authBox"></div>
-    <p class="mut" style="margin:0;font-size:12px">Depois de rodar o <code>supabase-security.sql</code>, só quem estiver logado consegue gravar. Crie o usuário em Supabase → Authentication → Users → Add user (marque “Auto Confirm”).</p>
+  <p class="hint" style="margin:14px 0 0;font-size:12.6px">Primeira vez? Rode <code>supabase-schema.sql</code> no SQL Editor e depois clique em “Enviar”.</p>
+</div>
+
+<div class="sec">
+  <h3><span class="em">💾</span> Backup &amp; dados</h3>
+  <p class="hint">Os dados vivem no navegador + na nuvem. Exporte para não perder nada.</p>
+  <div class="actions" style="margin-top:0">
+    <button id="exportBtn" class="btn ghost" type="button">Exportar JSON</button>
+    <label class="btn ghost" style="cursor:pointer">Importar JSON<input id="importFile" type="file" accept="application/json,.json" class="hide"></label>
+    <button id="resetBtn" class="btn danger" type="button">Restaurar original</button>
   </div>
+</div>
 </section>
-
 </main>
+<div class="overlay hide" id="modal">
+  <form id="form" class="modal">
+    <div class="mhead">
+      <h2 id="formTitle">Novo produto</h2>
+      <button type="button" class="x" id="cancelX" aria-label="Fechar">✕</button>
+    </div>
+    <div class="mbody">
+      <div class="prev">
+        <div class="box" id="prev">📦</div>
+        <div style="flex:1;min-width:0">
+          <label style="margin-bottom:6px">Foto do produto</label>
+          <input id="f_img" type="text" placeholder="imgs/ps5.jpg  ou  https://...">
+          <span class="tiny" style="display:block;margin-top:6px">Caminho da pasta <code>imgs/</code> ou URL. Sem foto, aparece o emoji.</span>
+        </div>
+      </div>
 
-<div id="modal" class="modal hide">
-  <form id="form" class="modal-box">
-    <h2 id="formTitle">Novo produto</h2>
-    <label>Nome do produto<input id="f_nome" placeholder="Ex.: Fone Bluetooth Gamer RGB" required></label>
-    <div class="grid2">
-      <label>ID (opcional)<input id="f_id" placeholder="gerado automaticamente"></label>
-      <label>Emoji<input id="f_emoji" placeholder="🎧"></label>
+      <div class="divider">Básico</div>
+      <label>Nome do produto<input id="f_nome" type="text" placeholder="Ex.: Fone Bluetooth Gamer RGB" required></label>
+      <div class="grid2">
+        <label>ID (opcional)<input id="f_id" type="text" placeholder="gerado automaticamente"></label>
+        <label>Emoji<input id="f_emoji" type="text" placeholder="🎧"></label>
+      </div>
+      <div class="grid2">
+        <label>Loja<select id="f_store"></select></label>
+        <label>Link de afiliado<input id="f_link" type="text" placeholder="https://..."></label>
+      </div>
+
+      <div class="divider">Preço e avaliação</div>
+      <div class="grid3">
+        <label>Preço (R$)<input id="f_preco" type="number" step="0.01" min="0" placeholder="89.90"></label>
+        <label>Preço "de" (R$)<input id="f_de" type="number" step="0.01" min="0" placeholder="149.90"></label>
+        <label>Nota (0-5)<input id="f_nota" type="number" step="0.1" min="0" max="5" placeholder="4.8"></label>
+      </div>
+      <div class="grid2">
+        <label>Cor 1 do cartão<input id="f_cor1" type="color" value="#1b2a6b"></label>
+        <label>Cor 2 do cartão<input id="f_cor2" type="color" value="#6b1b8f"></label>
+      </div>
+
+      <div class="divider">Detalhes</div>
+      <label>Descrição<textarea id="f_desc" rows="3" placeholder="Texto exibido na página do produto"></textarea></label>
+      <label>Especificações (uma por linha)<textarea id="f_specs" rows="3" placeholder="Bluetooth 5.3&#10;Bateria de ate 30h"></textarea></label>
     </div>
-    <label>Imagem (caminho ou URL)<input id="f_img" placeholder="imgs/ps5.jpg ou https://..."></label>
-    <div style="display:flex;gap:14px;align-items:center">
-      <div class="preview" id="prev">📦</div>
-      <span class="mut">Pré-visualização. Se não houver imagem, aparece o emoji.</span>
-    </div>
-    <div class="grid2">
-      <label>Loja<select id="f_store"></select></label>
-      <label>Link de afiliado<input id="f_link" type="text" placeholder="https://..."></label>
-    </div>
-    <div class="grid3">
-      <label>Preço (R$)<input id="f_preco" type="number" step="0.01" min="0" placeholder="89.90"></label>
-      <label>Preço "de" (R$)<input id="f_de" type="number" step="0.01" min="0" placeholder="149.90"></label>
-      <label>Nota (0-5)<input id="f_nota" type="number" step="0.1" min="0" max="5" placeholder="4.8"></label>
-    </div>
-    <div class="grid2">
-      <label>Cor 1<input id="f_cor1" type="color" class="colorin"></label>
-      <label>Cor 2<input id="f_cor2" type="color" class="colorin"></label>
-    </div>
-    <label>Descrição<textarea id="f_desc" rows="3" placeholder="Texto exibido na página do produto"></textarea></label>
-    <label>Especificações (uma por linha)<textarea id="f_specs" rows="3" placeholder="Bluetooth 5.3&#10;Bateria de ate 30h"></textarea></label>
-    <div class="actions">
-      <button type="button" id="cancel" class="btn ghost">Cancelar</button>
+    <div class="mfoot">
+      <button type="button" class="btn ghost" id="cancel">Cancelar</button>
       <button type="submit" class="btn">Salvar produto</button>
     </div>
   </form>
 </div>
+
+<div class="overlay hide" id="confirmOv">
+  <div class="modal" style="max-width:430px">
+    <div class="mhead"><h2 id="cfTitle">Confirmar</h2></div>
+    <div class="mbody"><p id="cfMsg" style="margin:0;color:var(--mut);font-size:14.4px"></p></div>
+    <div class="mfoot">
+      <button type="button" class="btn ghost" id="cfNo">Cancelar</button>
+      <button type="button" class="btn danger" id="cfYes">Excluir</button>
+    </div>
+  </div>
+</div>
+
+<div id="toasts"></div>
 
 <script src="config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
@@ -186,65 +443,149 @@ label{display:flex;flex-direction:column;gap:6px;font-size:13px;color:var(--mut)
   var $=function(s){return document.querySelector(s);};
   var brl=function(n){return (Number(n)||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});};
   var esc=function(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c];});};
-  if(!window.Store){document.body.innerHTML='<p style="color:#ff2fb3;padding:40px;font-family:sans-serif">Não foi possível carregar data.js. Verifique se o arquivo está na mesma pasta.</p>';return;}
+  if(!window.Store){document.body.innerHTML='<p style="color:#ff2fb3;padding:40px;font-family:sans-serif">Não foi possível carregar data.js. Verifique se está na mesma pasta.</p>';return;}
   var STORES=Store.STORES;
-  var editingId=null;
+  var editingId=null,filtro='all',cloudUser=null;
 
-  /* ---- login ---- */
+  /* ---------- toast ---------- */
+  function toast(msg,type){
+    var el=document.createElement('div');
+    el.className='toast '+(type==='err'?'err':'ok');
+    el.innerHTML='<span class="ic">'+(type==='err'?'⚠️':'✅')+'</span><span>'+esc(msg)+'</span>';
+    $('#toasts').appendChild(el);
+    setTimeout(function(){el.classList.add('out');setTimeout(function(){if(el.parentNode)el.remove();},340);},4300);
+  }
+
+  /* ---------- confirmação custom ---------- */
+  function ask(title,msg,label){
+    return new Promise(function(res){
+      $('#cfTitle').textContent=title;$('#cfMsg').textContent=msg;$('#cfYes').textContent=label||'Excluir';
+      $('#confirmOv').classList.remove('hide');
+      function done(v){$('#confirmOv').classList.add('hide');$('#cfYes').onclick=null;$('#cfNo').onclick=null;res(v);}
+      $('#cfYes').onclick=function(){done(true);};
+      $('#cfNo').onclick=function(){done(false);};
+    });
+  }
+
+  /* ---------- estado (modo seguro) ---------- */
+  function isSecure(){return !!Store.settings.get().secureMode;}
+  function locked(){return isSecure() && !cloudUser;}
+  function lockMsg(){return 'Modo seguro ativo: faça login na nuvem para editar.';}
+
+  /* ---------- login do painel ---------- */
   function authed(){return sessionStorage.getItem('neondeals.admin')==='1';}
-  function showGate(){$('#gate').classList.remove('hide');$('#panel').classList.add('hide');}
-  function showPanel(){$('#gate').classList.add('hide');$('#panel').classList.remove('hide');renderList();loadSettings();}
+  function showGate(){$('#gate').classList.remove('hide');}
+  function showPanel(){$('#gate').classList.add('hide');renderChips();render();}
   $('#gateForm').addEventListener('submit',function(e){
     e.preventDefault();
-    if($('#gatePass').value===Store.settings.get().password){sessionStorage.setItem('neondeals.admin','1');$('#gateErr').textContent='';showPanel();}
+    if($('#gatePass').value===Store.settings.get().password){sessionStorage.setItem('neondeals.admin','1');$('#gateErr').textContent='';$('#gatePass').value='';showPanel();}
     else{$('#gateErr').textContent='Senha incorreta.';}
   });
   $('#logout').addEventListener('click',function(){sessionStorage.removeItem('neondeals.admin');showGate();});
 
-  /* ---- abas ---- */
-  Array.prototype.forEach.call(document.querySelectorAll('.tab'),function(t){
+  /* ---------- navegação ---------- */
+  Array.prototype.forEach.call(document.querySelectorAll('.nav button'),function(t){
     t.addEventListener('click',function(){
-      Array.prototype.forEach.call(document.querySelectorAll('.tab'),function(x){x.classList.remove('on');});
+      Array.prototype.forEach.call(document.querySelectorAll('.nav button'),function(x){x.classList.remove('on');});
       t.classList.add('on');
-      $('#tab-produtos').classList.toggle('hide',t.dataset.tab!=='produtos');
-      $('#tab-identidade').classList.toggle('hide',t.dataset.tab!=='identidade');
+      var k=t.dataset.tab;
+      $('#tab-produtos').classList.toggle('on',k==='produtos');
+      $('#tab-identidade').classList.toggle('on',k==='identidade');
     });
   });
-
-  /* ---- marca ---- */
-  function applyBrand(){var s=Store.settings.get();var l=document.querySelector('.logo');if(l)l.innerHTML=s.brandA+'<span>'+s.brandB+'</span>';}
-
-  /* ---- lista ---- */
-  function renderList(){
-    var q=($('#busca').value||'').toLowerCase();
-    var all=Store.products.list();
-    var list=all.filter(function(p){return !q||(p.nome||'').toLowerCase().indexOf(q)>=0;});
-    $('#cont').textContent=all.length+' produto'+(all.length===1?'':'s')+(q?' • '+list.length+' encontrado'+(list.length===1?'':'s'):'');
-    if(!list.length){$('#lista').innerHTML='<div class="empty">'+(all.length?'Nenhum produto corresponde à busca.':'Nenhum produto ainda. Clique em “+ Novo produto”.')+'</div>';return;}
-    $('#lista').innerHTML=list.map(function(p){
-      var st=STORES[p.store]||{n:p.store,c:'#888'};
-      var c1=(p.cor&&p.cor[0])||'#222',c2=(p.cor&&p.cor[1])||'#111';
-      var thumb=p.img?'<img src="'+esc(p.img)+'" alt="" onerror="this.remove()">':esc(p.emoji||'📦');
-      return '<div class="row"><div class="thumb" style="background:linear-gradient(135deg,'+c1+','+c2+')">'+thumb+'</div>'
-        +'<div class="info"><div class="nome">'+esc(p.nome)+'</div><div class="sub"><span class="chipstore" style="color:'+st.c+'">'+esc(st.n)+'</span><span>'+brl(p.preco)+'</span>'+(p.de?'<span class="mut">de '+brl(p.de)+'</span>':'')+'<span>★ '+esc(p.nota)+'</span></div></div>'
-        +'<div class="acts"><button class="btn mini ghost" data-edit="'+esc(p.id)+'">Editar</button><button class="btn mini danger" data-del="'+esc(p.id)+'">Excluir</button></div></div>';
-    }).join('');
+  /* ---------- estatísticas ---------- */
+  function stats(){
+    var all=Store.products.list(),n=all.length,stores={};
+    all.forEach(function(p){stores[p.store]=1;});
+    var avg=n?all.reduce(function(s,p){return s+(Number(p.preco)||0);},0)/n:0;
+    var off=n?all.reduce(function(s,p){var d=Number(p.de)||0,x=Number(p.preco)||0;return s+(d>0?Math.max(0,1-x/d):0);},0)/n:0;
+    function card(lbl,val,sub,acc){
+      return '<div class="stat" style="--acc:'+acc+'"><div class="lbl">'+lbl+'</div><div class="num">'+val+'</div><div class="sub">'+sub+'</div></div>';
+    }
+    $('#stats').innerHTML=
+      card('Produtos',n,n?'no catálogo':'nenhum ainda','#00f0ff')+
+      card('Lojas',Object.keys(stores).length,'parceiras ativas','#b04dff')+
+      card('Preço médio',brl(avg),'média dos produtos','#39ff88')+
+      card('Desconto médio',Math.round(off*100)+'%','comparado ao preço "de"','#ff2fb3');
   }
-  $('#busca').addEventListener('input',renderList);
-  $('#lista').addEventListener('click',function(e){
-    var b=e.target.closest('button');if(!b)return;
-    if(b.dataset.edit)openForm(b.dataset.edit);
-    if(b.dataset.del&&confirm('Excluir este produto?')){Store.products.remove(b.dataset.del);renderList();}
+
+  /* ---------- chips de filtro ---------- */
+  function renderChips(){
+    var html='<button class="chip'+(filtro==='all'?' on':'')+'" data-s="all" type="button">Todas</button>';
+    Object.keys(STORES).forEach(function(k){
+      html+='<button class="chip'+(filtro===k?' on':'')+'" data-s="'+k+'" type="button">'+esc(STORES[k].n)+'</button>';
+    });
+    $('#chips').innerHTML=html;
+  }
+  $('#chips').addEventListener('click',function(e){
+    var b=e.target.closest('.chip');if(!b)return;
+    filtro=b.dataset.s;renderChips();render();
   });
 
-  /* ---- formulario ---- */
-  function storeOptions(sel){return Object.keys(STORES).map(function(k){return '<option value="'+k+'"'+(k===sel?' selected':'')+'>'+esc(STORES[k].n)+'</option>';}).join('');}
+  /* ---------- lista ---------- */
+  function render(){
+    stats();
+    var q=($('#busca').value||'').toLowerCase();
+    var all=Store.products.list();
+    var list=all.filter(function(p){
+      var okF=(filtro==='all'||p.store===filtro);
+      var okQ=!q||String(p.nome||'').toLowerCase().indexOf(q)>=0||String(p.id||'').toLowerCase().indexOf(q)>=0;
+      return okF&&okQ;
+    });
+    $('#cnt').textContent=all.length+' produto'+(all.length===1?'':'s')+(q||filtro!=='all'?' • '+list.length+' na lista':' • catálogo sincronizado');
+    if(!list.length){
+      $('#lista').innerHTML='<div class="empty"><span class="big">🗂️</span>'+(all.length?'Nenhum produto corresponde ao filtro.':'Nenhum produto ainda. Clique em “＋ Novo produto”.')+'</div>';
+      return;
+    }
+    var lock=locked();
+    $('#lista').innerHTML=list.map(function(p){
+      var st=STORES[p.store]||{n:p.store||'—',c:'#8b8fb0'};
+      var c1=(p.cor&&p.cor[0])||'#1b2a6b',c2=(p.cor&&p.cor[1])||'#6b1b8f';
+      var thumb=p.img?'<img src="'+esc(p.img)+'" alt="" loading="lazy" onerror="this.remove()">':esc(p.emoji||'📦');
+      var note=(p.nota!=null&&p.nota!=='')?'★ '+esc(p.nota):'—';
+      var dp=Number(p.de),pp=Number(p.preco);
+      var dd=(dp>0&&pp>0)?Math.round((1-pp/dp)*100):0;
+      return '<div class="row">'
+        +'<div class="thumb" style="background:linear-gradient(135deg,'+c1+','+c2+')">'+thumb+'</div>'
+        +'<div class="info"><div class="pname">'+esc(p.nome)+'</div>'
+        +'<div class="pmeta"><span class="tag" style="color:'+st.c+'">'+esc(st.n)+'</span>'
+        +'<span class="pid">'+esc(p.id)+'</span>'
+        +(dd>0?'<span class="tag" style="color:#39ff88">-'+dd+'%</span>':'')+'</div></div>'
+        +'<div class="c-price"><span class="money">'+brl(pp)+'</span></div>'
+        +'<div class="c-rate"><span class="rate">'+note+'</span></div>'
+        +'<div class="acts">'
+        +'<button class="mini" data-edit="'+esc(p.id)+'"'+(lock?' disabled title="'+esc(lockMsg())+'"':'')+'>Editar</button>'
+        +'<button class="mini del" data-del="'+esc(p.id)+'"'+(lock?' disabled title="'+esc(lockMsg())+'"':'')+'>Excluir</button>'
+        +'</div></div>';
+    }).join('');
+  }
+  $('#busca').addEventListener('input',render);
+
+  $('#lista').addEventListener('click',function(e){
+    var b=e.target.closest('button');if(!b||b.disabled)return;
+    if(b.dataset.edit)openForm(b.dataset.edit);
+    if(b.dataset.del){
+      var p=Store.products.get(b.dataset.del);
+      ask('Excluir produto','Tem certeza que deseja excluir “'+(p?p.nome:b.dataset.del)+'”? Não dá para desfazer.').then(function(yes){
+        if(!yes)return;
+        Store.products.remove(b.dataset.del);render();toast('Produto excluído.');
+      });
+    }
+  });
+  /* ---------- formulário de produto ---------- */
+  function storeOptions(sel){
+    return Object.keys(STORES).map(function(k){
+      return '<option value="'+k+'"'+(k===sel?' selected':'')+'>'+esc(STORES[k].n)+'</option>';
+    }).join('');
+  }
   function updatePreview(){
-    var v=$('#f_img').value.trim(),e=$('#f_emoji').value.trim()||'📦',box=$('#prev');
-    if(v){box.innerHTML='<img alt="">';var im=box.querySelector('img');im.onerror=function(){box.textContent=e;};im.src=v;}
+    var v=($('#f_img').value||'').trim(),e=($('#f_emoji').value||'').trim()||'📦',box=$('#prev');
+    if(v){box.innerHTML='<img alt="">';var im=box.querySelector('img');
+      im.onerror=function(){box.textContent=e;};im.src=v;}
     else{box.textContent=e;}
   }
   function openForm(id){
+    if(locked()){toast(lockMsg(),'err');return;}
     editingId=id||null;
     var p=id?Store.products.get(id):null;
     $('#formTitle').textContent=p?'Editar produto':'Novo produto';
@@ -253,9 +594,9 @@ label{display:flex;flex-direction:column;gap:6px;font-size:13px;color:var(--mut)
     $('#f_emoji').value=p?(p.emoji||''):'';
     $('#f_img').value=p?(p.img||''):'';
     $('#f_store').innerHTML=storeOptions(p?p.store:'shopee');
-    $('#f_preco').value=(p&&p.preco!=null)?p.preco:'';
+    $('#f_preco').value=(p&&p.preco!=null&&p.preco!=='')?p.preco:'';
     $('#f_de').value=(p&&p.de)?p.de:'';
-    $('#f_nota').value=(p&&p.nota!=null)?p.nota:'4.8';
+    $('#f_nota').value=(p&&p.nota!=null&&p.nota!=='')?p.nota:'4.8';
     $('#f_cor1').value=(p&&p.cor&&p.cor[0])||'#1b2a6b';
     $('#f_cor2').value=(p&&p.cor&&p.cor[1])||'#6b1b8f';
     $('#f_desc').value=p?(p.desc||''):'';
@@ -263,121 +604,154 @@ label{display:flex;flex-direction:column;gap:6px;font-size:13px;color:var(--mut)
     $('#f_link').value=p?(p.link||''):'';
     updatePreview();
     $('#modal').classList.remove('hide');
+    setTimeout(function(){$('#f_nome').focus();},60);
   }
   function closeForm(){$('#modal').classList.add('hide');editingId=null;}
   $('#cancel').addEventListener('click',closeForm);
+  $('#cancelX').addEventListener('click',closeForm);
   $('#modal').addEventListener('click',function(e){if(e.target===$('#modal'))closeForm();});
   $('#f_img').addEventListener('input',updatePreview);
   $('#f_emoji').addEventListener('input',updatePreview);
-  /* ---- salvar produto ---- */
+  $('#novo').addEventListener('click',function(){openForm(null);});
+
   $('#form').addEventListener('submit',function(e){
     e.preventDefault();
+    if(locked()){toast(lockMsg(),'err');return;}
     var obj={
-      nome:$('#f_nome').value.trim(),
-      emoji:$('#f_emoji').value.trim(),
-      img:$('#f_img').value.trim(),
+      nome:($('#f_nome').value||'').trim(),
+      emoji:($('#f_emoji').value||'').trim(),
+      img:($('#f_img').value||'').trim(),
       store:$('#f_store').value,
       preco:parseFloat($('#f_preco').value)||0,
       de:parseFloat($('#f_de').value)||0,
       nota:parseFloat($('#f_nota').value)||0,
       cor:[$('#f_cor1').value,$('#f_cor2').value],
-      desc:$('#f_desc').value.trim(),
-      specs:$('#f_specs').value.split('\n').map(function(s){return s.trim();}).filter(Boolean),
-      link:$('#f_link').value.trim()
+      desc:($('#f_desc').value||'').trim(),
+      specs:($('#f_specs').value||'').split('\n').map(function(s){return s.trim();}).filter(Boolean),
+      link:($('#f_link').value||'').trim()
     };
-    if(!obj.nome){alert('Informe o nome do produto.');return;}
-    var iid=$('#f_id').value.trim();
-    if(editingId){obj.id=iid||editingId;Store.products.update(editingId,obj);}
-    else{if(iid)obj.id=iid;Store.products.add(obj);}
-    closeForm();renderList();
+    if(!obj.nome){toast('Informe o nome do produto.','err');return;}
+    var iid=($('#f_id').value||'').trim();
+    if(editingId){obj.id=iid||editingId;Store.products.update(editingId,obj);toast('Produto atualizado.');}
+    else{if(iid)obj.id=iid;Store.products.add(obj);toast('Produto adicionado.');}
+    closeForm();render();
   });
-  $('#novo').addEventListener('click',function(){openForm(null);});
-
-  /* ---- identidade / senha ---- */
-  function loadSettings(){var s=Store.settings.get();$('#s_brandA').value=s.brandA;$('#s_brandB').value=s.brandB;$('#s_footer').value=s.footer;}
+  /* ---------- identidade / senha ---------- */
+  function loadSettings(){
+    var s=Store.settings.get();
+    $('#s_brandA').value=s.brandA;$('#s_brandB').value=s.brandB;$('#s_footer').value=s.footer;
+    $('#secureMode').checked=!!s.secureMode;
+    renderSecureState();
+  }
+  function renderSecureState(){
+    var el=$('#secureState');if(!el)return;
+    if(isSecure()&&cloudUser){
+      el.innerHTML='<div class="banner" style="border-color:rgba(57,255,136,.35);background:rgba(57,255,136,.08);color:#c9ffe0">🛡️ <span><b>Modo seguro ativo</b> e você está logado como <b>'+esc(cloudUser.email)+'</b>. Só quem tem login altera produtos.</span></div>';
+    }else if(isSecure()){
+      el.innerHTML='<div class="banner">🛡️ <span><b>Modo seguro ativo.</b> Editar/excluir está travado até você entrar na nuvem logo abaixo. Já rodou o <code>supabase-security.sql</code>?</span></div>';
+    }else{
+      el.innerHTML='<div class="banner bad">⚠️ <span><b>Modo simples (RLS aberto).</b> Qualquer um com a chave pública pode alterar o banco. Para blindar: ① crie o usuário em <b>Authentication → Users</b> (Auto Confirm), ② rode <b>supabase-security.sql</b>, ③ ligue o botão acima e entre na nuvem.</span></div>';
+    }
+  }
   $('#identForm').addEventListener('submit',function(e){
     e.preventDefault();
-    Store.settings.set({brandA:$('#s_brandA').value.trim(),brandB:$('#s_brandB').value.trim(),footer:$('#s_footer').value.trim()});
-    applyBrand();alert('Identidade salva. Abra a loja para ver as mudanças.');
+    Store.settings.set({
+      brandA:($('#s_brandA').value||'').trim()||'NEON',
+      brandB:($('#s_brandB').value||'').trim()||'DEALS',
+      footer:($('#s_footer').value||'').trim()
+    });
+    toast('Identidade salva. Abra a loja para ver.');
   });
   $('#passForm').addEventListener('submit',function(e){
     e.preventDefault();
     var np=$('#p_new').value;
-    if(np.length<3){alert('Use ao menos 3 caracteres.');return;}
-    Store.settings.set({password:np});$('#p_new').value='';alert('Senha atualizada.');
+    if(!np||np.length<3){toast('Use no mínimo 3 caracteres.','err');return;}
+    Store.settings.set({password:np});$('#p_new').value='';
+    toast('Senha do painel alterada.');
+  });
+  $('#secureMode').addEventListener('change',function(){
+    var on=$('#secureMode').checked;
+    Store.settings.set({secureMode:on});
+    renderSecureState();render();
+    toast(on?'🛡️ Modo seguro ATIVADO.':'⚠️ Modo simples ativo.',on?'ok':'err');
+  });
+  /* ---------- nuvem ---------- */
+  function updateCloud(){
+    var st=Store.status(),ok=(st.mode==='supabase');
+    $('#cloudStatus').innerHTML=ok
+      ? '<b style="color:var(--ok)">● Conectado ao Supabase</b> — tabela <code>'+esc(st.table)+'</code> • '+Store.products.list().length+' produto(s) no catálogo'
+      : '<b style="color:var(--c3)">● Modo local</b> — dados apenas neste navegador'+(st.error?' <span style="color:var(--dim)">('+esc(st.error)+')</span>':'');
+    var b=$('#cloudBadge');b.className='pill '+(ok?'ok':'bad');
+    $('#cloudBadgeTxt').textContent=ok?'Nuvem':'Local';
+    $('#upBtn').disabled=!ok;$('#downBtn').disabled=!ok;
+  }
+  $('#upBtn').addEventListener('click',function(){
+    Store.cloud.uploadAll().then(function(n){toast(n+' produto(s) enviado(s) para a nuvem.');updateCloud();})
+      .catch(function(e){toast('Falha ao enviar: '+e.message,'err');});
+  });
+  $('#downBtn').addEventListener('click',function(){
+    Store.cloud.downloadAll().then(function(n){render();updateCloud();toast(n+' produto(s) baixado(s) da nuvem.');})
+      .catch(function(e){toast('Falha ao baixar: '+e.message,'err');});
   });
 
-  /* ---- backup / import / reset ---- */
+  /* ---------- login na nuvem ---------- */
+  function renderAuth(){
+    var box=$('#authBox');if(!box)return;
+    if(!Store.auth.ready()){box.innerHTML='<p class="hint" style="margin:0">Disponível quando o Supabase estiver configurado.</p>';return;}
+    Store.auth.current().then(function(u){
+      cloudUser=u;
+      if(u){
+        box.innerHTML='<div class="banner" style="border-color:rgba(57,255,136,.35);background:rgba(57,255,136,.08);color:#c9ffe0;margin-bottom:0">✅ <span>Logado como <b>'+esc(u.email)+'</b></span></div>'
+          +'<div class="actions" style="margin-top:12px"><button id="authOut" class="btn ghost" type="button">Sair da nuvem</button></div>';
+        $('#authOut').onclick=function(){Store.auth.signOut().then(function(){toast('Você saiu da nuvem.');renderAuth();});};
+      }else{
+        box.innerHTML='<div class="grid2"><label>E-mail<input id="a_email" type="email" placeholder="voce@email.com"></label>'
+          +'<label>Senha<input id="a_pass" type="password" placeholder="sua senha"></label></div>'
+          +'<div class="actions" style="margin-top:12px"><button id="authIn" class="btn" type="button">Entrar na nuvem</button></div>'
+          +'<div id="authErr" class="err"></div>';
+        $('#authIn').onclick=function(){
+          var em=($('#a_email').value||'').trim(),pw=$('#a_pass').value;
+          if(!em||!pw){$('#authErr').textContent='Informe e-mail e senha.';return;}
+          $('#authIn').disabled=true;
+          Store.auth.signIn(em,pw).then(function(){toast('Login realizado!');renderAuth();})
+            .catch(function(er){$('#authErr').textContent=er.message;$('#authIn').disabled=false;});
+        };
+      }
+      renderSecureState();render();
+    });
+  }
+
+  /* ---------- backup ---------- */
   function download(name,text){
     var b=new Blob([text],{type:'application/json'}),u=URL.createObjectURL(b),a=document.createElement('a');
     a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(u);
   }
-  $('#exportBtn').addEventListener('click',function(){download('neondeals-dados.json',Store.exportJSON());});
+  $('#exportBtn').addEventListener('click',function(){download('loja-backup.json',Store.exportJSON());toast('Backup baixado.');});
   $('#importFile').addEventListener('change',function(e){
-    var f=e.target.files[0];if(!f)return;
-    var r=new FileReader();
+    var f=e.target.files[0];if(!f)return;var r=new FileReader();
     r.onload=function(){
-      try{var n=Store.importJSON(r.result);applyBrand();renderList();loadSettings();alert(n+' produto(s) importado(s).');}
-      catch(err){alert('Falha ao importar: '+err.message);}
+      try{var n=Store.importJSON(r.result);render();loadSettings();updateCloud();toast(n+' produto(s) importado(s).');}
+      catch(err){toast('Falha ao importar: '+err.message,'err');}
       e.target.value='';
     };
     r.readAsText(f);
   });
   $('#resetBtn').addEventListener('click',function(){
-    if(confirm('Restaurar os produtos e a identidade originais? Isso apaga suas alterações.')){
-      Store.products.reset();Store.settings.reset();applyBrand();renderList();loadSettings();
-    }
-  });
-
-  /* ---- nuvem ---- */
-  function updateCloud(){
-    var st=Store.status(), el=$('#cloudStatus'), ok=(st.mode==='supabase');
-    if(el){
-      el.innerHTML = ok
-        ? '<b style="color:var(--ok)">● Conectado ao Supabase</b> — tabela <code>'+esc(st.table)+'</code>. Os produtos ficam públicos para todos.'
-        : '<b style="color:var(--c3)">● Modo local</b> — os produtos ficam salvos só neste navegador.'+(st.error?' <span style="color:var(--mut)">('+esc(st.error)+')</span>':'');
-    }
-    var b=$('#cloudBadge');
-    if(b){ b.textContent=ok?'Nuvem':'Local'; b.style.borderColor=ok?'var(--ok)':'var(--c3)'; b.style.color=ok?'var(--ok)':'var(--c3)'; }
-    if($('#upBtn')) $('#upBtn').disabled=!ok;
-    if($('#downBtn')) $('#downBtn').disabled=!ok;
-  }
-  $('#upBtn').addEventListener('click',function(){
-    Store.cloud.uploadAll().then(function(n){alert(n+' produto(s) enviado(s) para a nuvem.');}).catch(function(e){alert('Falha ao enviar: '+e.message);});
-  });
-  $('#downBtn').addEventListener('click',function(){
-    Store.cloud.downloadAll().then(function(n){renderList();updateCloud();alert(n+' produto(s) baixado(s) da nuvem.');}).catch(function(e){alert('Falha ao baixar: '+e.message);});
-  });
-
-  /* ---- conta (login na nuvem) ---- */
-  function renderAuth(){
-    var box=$('#authBox'); if(!box) return;
-    if(!Store.auth.ready()){ box.innerHTML='<p class="mut" style="margin:0">Disponível quando o Supabase estiver configurado.</p>'; return; }
-    Store.auth.current().then(function(u){
-      if(u){
-        box.innerHTML='<p class="mut" style="margin:0">Conectado como <b style="color:var(--ok)">'+esc(u.email)+'</b> — suas alterações são gravadas com segurança.</p><div class="actions" style="justify-content:flex-start"><button id="authOut" class="btn ghost" type="button">Sair</button></div>';
-        $('#authOut').onclick=function(){ Store.auth.signOut().then(renderAuth); };
-      } else {
-        box.innerHTML='<p class="mut" style="margin:0 0 8px">Entre para gravar com segurança (necessário depois de ativar o RLS seguro).</p>'
-          +'<div class="grid2"><label>E-mail<input id="a_email" type="email" placeholder="voce@email.com"></label><label>Senha<input id="a_pass" type="password" placeholder="sua senha"></label></div>'
-          +'<div class="actions" style="justify-content:flex-start"><button id="authIn" class="btn" type="button">Entrar na nuvem</button></div><div id="authErr" class="err"></div>';
-        $('#authIn').onclick=function(){
-          var e=$('#a_email').value.trim(), p=$('#a_pass').value;
-          if(!e||!p){ $('#authErr').textContent='Informe e-mail e senha.'; return; }
-          Store.auth.signIn(e,p).then(function(){ renderAuth(); }).catch(function(err){ $('#authErr').textContent=err.message; });
-        };
-      }
+    ask('Restaurar original','Isso apaga seus produtos e identidade locais e volta para a fábrica. Continuar?','Restaurar').then(function(y){
+      if(!y)return;
+      Store.products.reset();Store.settings.reset();
+      loadSettings();renderChips();render();updateCloud();renderAuth();toast('Dados restaurados.');
     });
-  }
+  });
 
-  /* ---- inicio ---- */
-  applyBrand();
-  if(authed())showPanel();else showGate();
-  Store.init().then(function(){renderList();updateCloud();renderAuth();});
+  /* ---------- erros de gravação na nuvem ---------- */
+  Store.onWriteError(function(m){toast('Erro ao gravar na nuvem: '+m,'err');});
 
+  /* ---------- início ---------- */
+  loadSettings();renderChips();
+  if(authed()){$('#gate').classList.add('hide');}else{showGate();}
+  Store.init().then(function(){updateCloud();renderAuth();renderChips();render();});
 })();
 </script>
-
-
 </body>
 </html>

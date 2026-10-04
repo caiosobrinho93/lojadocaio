@@ -31,7 +31,8 @@
     brandA: 'NEON',
     brandB: 'DEALS',
     footer: 'NeonDeals reúne ofertas de várias lojas. Ao clicar, você é redirecionado ao site da loja parceira, onde a compra é feita. Podemos receber comissão por vendas, sem custo extra para você. Preços e disponibilidade podem mudar na loja.',
-    password: 'admin'
+    password: 'admin',
+    secureMode: false
   };
 
   /* Produtos iniciais (seed) — usados quando ainda não há nada salvo */
@@ -82,12 +83,15 @@
     };
   }
 
+  var writeErrCbs = [];
+  function fireWriteErr(m) { for (var i = 0; i < writeErrCbs.length; i++) { try { writeErrCbs[i](m); } catch (e) {} } }
   function pushRemote(fn) {
     if (mode !== 'supabase' || !sb) return;
     try {
-      Promise.resolve(fn(sb)).then(function (res) { if (res && res.error) lastError = res.error.message; })
-        .catch(function (e) { lastError = (e && e.message) || String(e); });
-    } catch (e) { lastError = (e && e.message) || String(e); }
+      Promise.resolve(fn(sb)).then(function (res) {
+        if (res && res.error) { lastError = res.error.message; fireWriteErr(res.error.message); }
+      }).catch(function (e) { var m = (e && e.message) || String(e); lastError = m; fireWriteErr(m); });
+    } catch (e) { var m2 = (e && e.message) || String(e); lastError = m2; fireWriteErr(m2); }
   }
 
   var Store = {
@@ -95,6 +99,7 @@
     uid: uid,
     config: CFG,
     onChange: function (cb) { if (typeof cb === 'function') listeners.push(cb); },
+    onWriteError: function (cb) { if (typeof cb === 'function') writeErrCbs.push(cb); },
     mode: function () { return mode; },
     status: function () { return { mode: mode, table: TABLE, url: CFG.supabaseUrl || '', error: lastError }; },
 
