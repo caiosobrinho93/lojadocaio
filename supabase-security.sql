@@ -1,5 +1,5 @@
 -- ============================================================
--- Loja do Caio — SEGURANÇA (RLS)
+-- NEONS — SEGURANÇA (RLS)
 -- Rode em: Supabase → SQL Editor → New query → Run
 -- ------------------------------------------------------------
 -- Resultado: leitura PÚBLICA (a loja continua aberta para todos)
