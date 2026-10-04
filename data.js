@@ -29,8 +29,8 @@
   /* Identidade da loja (editável no painel) */
   var DEFAULT_SETTINGS = {
     brandA: 'NEON',
-    brandB: 'DEALS',
-    footer: 'NeonDeals reúne ofertas de várias lojas. Ao clicar, você é redirecionado ao site da loja parceira, onde a compra é feita. Podemos receber comissão por vendas, sem custo extra para você. Preços e disponibilidade podem mudar na loja.',
+    brandB: 'S',
+    footer: 'NEONS reúne ofertas de várias lojas. Ao clicar, você é redirecionado ao site da loja parceira, onde a compra é feita. Podemos receber comissão por vendas, sem custo extra para você. Preços e disponibilidade podem mudar na loja.',
     password: 'admin',
     secureMode: false
   };

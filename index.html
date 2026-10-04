@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>NeonDeals — Achadinhos de todas as lojas</title>
+<title>NEONS — Achadinhos de todas as lojas</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#07070d;--panel:#10101c;--panel2:#161628;--txt:#eef0ff;--mut:#8b8fb0;--c1:#00f0ff;--c2:#b04dff;--c3:#ff2fb3;--ok:#39ff88;
@@ -66,22 +66,24 @@ header{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:rg
 .pic{position:absolute;inset:0;display:grid;place-items:center;padding-bottom:96px;overflow:hidden}
 .pic:before{content:"";position:absolute;width:220px;height:220px;border-radius:50%;background:rgba(255,255,255,.16);filter:blur(34px);transition:transform .9s var(--ease),opacity .4s}
 .pic .em{font-size:132px;position:relative;z-index:1;filter:drop-shadow(0 14px 22px rgba(0,0,0,.6));transition:transform .9s var(--spring)}
-.card:hover .em{transform:translateY(-8px) scale(1.15) rotate(-8deg)}
-.card:hover .pic:before{transform:scale(1.6)}
+.card:hover .em{transform:translateY(-15px) scale(1.24) rotate(-11deg)}
+.card:hover .pic:before{transform:scale(1.85)}
+.card:hover .panel h3{color:#fff}
 .pic img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .pic:after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(5,5,12,.75),transparent 58%)}
-.panel{position:absolute;left:14px;right:14px;bottom:14px;height:98px;z-index:3;padding:14px 16px;border-radius:16px;background:linear-gradient(160deg,#1a1a38,#0d0d1c);border:1px solid rgba(0,240,255,.3);box-shadow:0 18px 36px rgba(0,0,0,.65),0 0 24px rgba(0,240,255,.14);display:flex;flex-direction:column;justify-content:space-between;pointer-events:none}
-.panel h3{margin:0;font-size:15px;line-height:1.3;font-weight:500;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.pr{display:flex;align-items:center;justify-content:space-between;gap:8px}
-.panel .off{position:static;font-size:12px;padding:4px 10px}
-.rate{position:absolute;top:14px;right:14px;z-index:3;display:inline-flex;align-items:center}
+.panel{position:absolute;left:0;right:0;bottom:0;z-index:3;padding:48px 15px 15px;border-radius:0 0 21px 21px;background:linear-gradient(to top,#06060d 0%,rgba(6,6,13,.95) 40%,rgba(6,6,13,.62) 70%,transparent 100%);display:flex;flex-direction:column;justify-content:flex-end;gap:7px;pointer-events:none}
+.panel h3{margin:0;font-size:15.5px;line-height:1.12;font-weight:600;letter-spacing:-.015em;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.pr{display:flex;align-items:baseline;justify-content:flex-start;gap:9px}
 .has .em,.pic.has:before{opacity:0}.big.has .em{display:none}
-.off{position:absolute;top:14px;left:14px;z-index:2;background:linear-gradient(90deg,var(--c3),#ff5f6d);color:#fff;font:700 13px 'Space Grotesk';padding:5px 11px;border-radius:99px;box-shadow:0 0 18px rgba(255,47,179,.7)}
+.rate{position:absolute;top:13px;right:13px;z-index:3;display:inline-flex;align-items:center;padding:5px 9px;border-radius:10px;background:rgba(7,7,13,.7);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.13)}
+.off{position:absolute;top:13px;left:13px;z-index:4;display:inline-flex;align-items:center;padding:5px 9px;border-radius:10px;font:800 12px/1 Inter,system-ui,sans-serif;letter-spacing:-.02em;color:#fff;background:linear-gradient(135deg,#ff2fb3,#ff5f6d);box-shadow:0 8px 18px rgba(255,47,179,.45),inset 0 1px 0 rgba(255,255,255,.4)}
 .store{position:absolute;top:14px;left:14px;z-index:3;transform:translateZ(36px);font:700 11px Inter;padding:5px 10px;border-radius:99px;background:rgba(7,7,13,.8);backdrop-filter:blur(6px);border:1px solid currentColor}
 .body{padding:18px;display:flex;flex-direction:column;gap:12px;flex:1}
 .body h3{margin:0;font-size:16px;line-height:1.35;font-weight:500;min-height:44px}
 .old{color:var(--mut);text-decoration:line-through;font-size:13px}
 .price{font-size:28px;font-weight:700;color:var(--ok);text-shadow:0 0 16px rgba(57,255,136,.45);line-height:1.1}
+.panel .price{font-family:Inter,system-ui,sans-serif;font-weight:800;font-size:21.5px;letter-spacing:-.04em;line-height:1;white-space:nowrap;text-shadow:0 0 20px rgba(57,255,136,.4)}
+.panel .was{font:600 12.5px/1 Inter,system-ui,sans-serif;color:var(--mut);text-decoration:line-through;letter-spacing:-.01em;white-space:nowrap;opacity:.85}
 .eco{font-size:12px;color:var(--c1);margin-top:4px}
 .stars{display:flex}
 .stars,.rate{align-items:center;gap:2px;color:#ffd23f}
@@ -118,11 +120,11 @@ footer{position:relative;z-index:1;border-top:1px solid #1d1d38;padding:30px 20p
 <body>
 <canvas id="bg"></canvas>
 <header><div class="wrap bar">
-  <a class="logo" href="#/">NEON<span>DEALS</span></a>
+  <a class="logo" href="#/">NEON<span>S</span></a>
   <div class="search"><input id="q" type="search" placeholder="Buscar produtos…" autocomplete="off"></div>
 </div></header>
 <main class="wrap" id="app"></main>
-<footer>NeonDeals reúne ofertas de várias lojas. Ao clicar, você é redirecionado ao site da loja parceira, onde a compra é feita. Podemos receber comissão por vendas, sem custo extra para você. Preços e disponibilidade podem mudar na loja.</footer>
+<footer>NEONS reúne ofertas de várias lojas. Ao clicar, você é redirecionado ao site da loja parceira, onde a compra é feita. Podemos receber comissão por vendas, sem custo extra para você. Preços e disponibilidade podem mudar na loja.</footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <!-- Configuração + Supabase + camada de dados (produtos + identidade) -->
@@ -139,7 +141,7 @@ let PRODUCTS=Store.products.list();
 /* ============================================= */
 const $=s=>document.querySelector(s),app=$('#app'),brl=n=>n.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
 let filtro='all',busca='';
-const off=p=>Math.round((1-p.preco/p.de)*100);
+const off=p=>p.de>0?Math.max(0,Math.round((1-p.preco/p.de)*100)):0;
 const star=c=>`<svg class="${c}" viewBox="0 0 24 24"><path d="M12 3.6l2.5 5.3 5.8.8-4.2 4.1 1 5.8L12 16.8 6.9 19.6l1-5.8-4.2-4.1 5.8-.8z" fill="currentColor" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round"/></svg>`;
 const stars=n=>{const r=Math.round(n);return Array.from({length:5},(_,i)=>star(i<r?'':'e')).join('')+`<span class="n">${n.toFixed(1)}</span>`};
 const pic=(p,c)=>`<div class="${c}" style="background:linear-gradient(135deg,${p.cor[0]},${p.cor[1]})"><span class="em">${p.emoji}</span>${p.img?`<img src="${p.img}" alt="${p.nome}" loading="lazy" onload="this.parentNode.classList.add('has')" onerror="this.remove()">`:''}`;
@@ -165,21 +167,22 @@ function lista(){
   const t=busca.toLowerCase(),l=PRODUCTS.filter(p=>(filtro==='all'||p.store===filtro)&&p.nome.toLowerCase().includes(t));
   $('#cnt').textContent=l.length+' produto'+(l.length===1?'':'s');
   $('#grid').innerHTML=l.length?l.map((p,i)=>{const s=STORES[p.store];return `<a class="card" href="#/produto/${p.id}" style="animation-delay:${i*90}ms"><div class="inner">${pic(p,'pic')}</div></div>
+  ${off(p)>0?'<span class="off">-'+off(p)+'%</span>':''}
   <span class="rate">${stars(p.nota)}</span>
-  <div class="panel"><h3>${p.nome}</h3><div class="pr"><span class="price">${brl(p.preco)}</span><span class="off">-${off(p)}%</span></div></div></a>`}).join(''):'<div class="empty">Nenhum produto encontrado 😕</div>';
+  <div class="panel"><h3>${p.nome}</h3><div class="pr"><span class="price">${brl(p.preco)}</span>${p.de?'<span class="was">'+brl(p.de)+'</span>':''}</div></div></a>`}).join(''):'<div class="empty">Nenhum produto encontrado 😕</div>';
   if(matchMedia('(hover:hover)').matches)document.querySelectorAll('.card').forEach(tilt);
 }
 function tilt(c){
- const A={rx:0,ry:0,ty:0,mx:50,my:50,o:0},T={...A};let raf=0;
+ const A={rx:0,ry:0,ty:0,mx:50,my:50,o:0,sc:0},T={...A};let raf=0;
  const pt=e=>{const r=c.getBoundingClientRect();return[(e.clientX-r.left)/r.width,(e.clientY-r.top)/r.height]};
- const run=()=>{let busy=false;for(const k in A){const d=T[k]-A[k];A[k]+=d*(k[0]==='m'?.22:.09);if(Math.abs(d)>.02)busy=true}
-  c.style.transform=`perspective(900px) translateY(${A.ty}px) rotateX(${A.rx}deg) rotateY(${A.ry}deg)`;
+ const run=()=>{let busy=false;for(const k in A){const d=T[k]-A[k];A[k]+=d*(k[0]==='m'?.24:.13);if(Math.abs(d)>.02)busy=true}
+  c.style.transform=`perspective(900px) translateY(${A.ty}px) rotateX(${A.rx}deg) rotateY(${A.ry}deg) scale(${1+A.sc*.05})`;
   c.style.setProperty('--o',A.o);c.style.setProperty('--mx',A.mx+'%');c.style.setProperty('--my',A.my+'%');
   raf=busy?requestAnimationFrame(run):0};
  const go=()=>{if(!raf)raf=requestAnimationFrame(run)};
- c.addEventListener('pointerenter',e=>{const[x,y]=pt(e);A.mx=T.mx=x*100;A.my=T.my=y*100;T.ty=-10;T.o=1;go()});
- c.addEventListener('pointermove',e=>{const[x,y]=pt(e);T.ry=(x-.5)*12;T.rx=(.5-y)*10;T.mx=x*100;T.my=y*100;go()});
- c.addEventListener('pointerleave',()=>{T.rx=T.ry=T.ty=T.o=0;go()})}
+ c.addEventListener('pointerenter',e=>{const[x,y]=pt(e);A.mx=T.mx=x*100;A.my=T.my=y*100;T.ty=-20;T.sc=1;T.o=1;go()});
+ c.addEventListener('pointermove',e=>{const[x,y]=pt(e);T.ry=(x-.5)*26;T.rx=(.5-y)*19;T.mx=x*100;T.my=y*100;go()});
+ c.addEventListener('pointerleave',()=>{T.rx=T.ry=T.ty=T.o=T.sc=0;go()})}
 function produto(id){
   const p=PRODUCTS.find(x=>x.id===id);if(!p)return location.hash='#/';
   const s=STORES[p.store];
@@ -187,7 +190,7 @@ function produto(id){
   ${pic(p,'big')}</div>
   <div class="info"><span class="store" style="position:static;color:${s.c};display:inline-block">${s.n}</span>
   <h1>${p.nome}</h1><div class="stars">${stars(p.nota)}</div>
-  <div class="old" style="margin-top:14px">De ${brl(p.de)} <b style="color:var(--c3)">(-${off(p)}%)</b></div>
+  <div class="old" style="margin-top:14px">De ${brl(p.de)}${off(p)>0?' <b style="color:var(--c3)">(-'+off(p)+'%)</b>':''}</div>
   <div class="price">${brl(p.preco)}</div>
   <p>${p.desc}</p><ul class="specs">${p.specs.map(x=>`<li>${x}</li>`).join('')}</ul>
   <a class="btn buy" href="${p.link}" target="_blank" rel="sponsored noopener noreferrer">Ir para a oferta na ${s.n} ↗</a>
@@ -241,8 +244,8 @@ function pick(){pts.updateMatrixWorld();for(let k=0;k<40;k++){const i=(Math.rand
     if(logo) logo.innerHTML=s.brandA+'<span>'+s.brandB+'</span>';
     var f=document.querySelector('footer');
     if(f) f.textContent=s.footer;
-    document.title=(s.brandA+' '+s.brandB).trim()+' — Achadinhos de todas as lojas';
-  }catch(e){console.warn('NeonDeals: identidade',e);}
+    document.title=(s.brandA+s.brandB)+' — Achadinhos de todas as lojas';
+  }catch(e){console.warn('NEONS: identidade',e);}
 })();
 </script>
 </body>
