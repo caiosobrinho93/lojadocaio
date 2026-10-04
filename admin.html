@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NeonDeals — Painel de Administração</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}
+:root{--bg:#07070d;--panel:#10101c;--panel2:#161628;--txt:#eef0ff;--mut:#8b8fb0;--c1:#00f0ff;--c2:#b04dff;--c3:#ff2fb3;--ok:#39ff88;--line:#26264a;--ease:cubic-bezier(.22,1,.36,1)}
+body{margin:0;background:var(--bg);color:var(--txt);font-family:Inter,system-ui,sans-serif;min-height:100vh}
+h1,h2,h3,.logo,.btn{font-family:'Space Grotesk',Inter,sans-serif}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1100px;margin:0 auto;padding:0 20px}
+header.top{position:sticky;top:0;z-index:5;background:rgba(7,7,13,.82);backdrop-filter:blur(14px);border-bottom:1px solid rgba(0,240,255,.15)}
+.bar{display:flex;align-items:center;gap:14px;height:64px}
+.logo{font-weight:700;font-size:20px;color:var(--c1);text-shadow:0 0 12px var(--c1)}
+.logo span{color:var(--c3);text-shadow:0 0 12px var(--c3)}
+.badge{font:600 12px Inter;padding:4px 10px;border:1px solid var(--c2);border-radius:99px;color:var(--c2);box-shadow:0 0 14px rgba(176,77,255,.35)}
+.spacer{flex:1}
+.ghost-link{background:none;border:0;color:var(--mut);font:600 14px Inter;cursor:pointer;padding:8px;transition:color .3s}
+.ghost-link:hover{color:var(--c1)}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:11px 18px;border-radius:12px;border:0;cursor:pointer;font:700 14px 'Space Grotesk';color:#05050a;background:linear-gradient(90deg,var(--c1),var(--c2));box-shadow:0 0 22px rgba(0,240,255,.35);transition:transform .3s var(--ease),box-shadow .3s var(--ease)}
+.btn:hover{transform:translateY(-2px);box-shadow:0 0 34px rgba(176,77,255,.6)}
+.btn.ghost{background:transparent;color:var(--c1);border:1px solid var(--c1);box-shadow:none}
+.btn.danger{background:linear-gradient(90deg,var(--c3),#ff5f6d);color:#fff}
+.btn.mini{padding:8px 12px;font-size:13px}
+.tabs{display:flex;gap:8px;margin:24px 0 18px}
+.tab{padding:10px 18px;border-radius:99px;background:var(--panel);border:1px solid var(--line);color:var(--mut);cursor:pointer;font:600 14px Inter;transition:all .3s var(--ease)}
+.tab.on{color:#05050a;background:var(--c1);border-color:var(--c1);box-shadow:0 0 18px rgba(0,240,255,.5)}
+.toolbar{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:16px}
+input,select,textarea{background:var(--panel);border:1px solid var(--line);border-radius:10px;color:var(--txt);padding:10px 12px;font:inherit;outline:none;transition:border-color .3s,box-shadow .3s;width:100%}
+input:focus,select:focus,textarea:focus{border-color:var(--c1);box-shadow:0 0 0 3px rgba(0,240,255,.14)}
+#busca{max-width:320px}
+.mut{color:var(--mut);font-size:13px}
+.lista{display:grid;gap:12px;padding-bottom:60px}
+.row{display:grid;grid-template-columns:64px 1fr auto;gap:14px;align-items:center;background:linear-gradient(160deg,#141428,#0e0e1d);border:1px solid var(--line);border-radius:16px;padding:12px}
+.thumb{width:64px;height:64px;border-radius:12px;display:grid;place-items:center;font-size:32px;overflow:hidden;border:1px solid rgba(255,255,255,.12)}
+.thumb img{width:100%;height:100%;object-fit:cover}
+.row .info{min-width:0}
+.row .nome{font-weight:600;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row .sub{font-size:13px;color:var(--mut);margin-top:4px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.chipstore{font:700 11px Inter;padding:2px 8px;border-radius:99px;border:1px solid currentColor}
+.row .acts{display:flex;gap:8px}
+.empty{text-align:center;color:var(--mut);padding:50px 0}
+.gate{position:fixed;inset:0;display:grid;place-items:center;background:radial-gradient(600px at 50% 0%,rgba(176,77,255,.18),transparent),var(--bg);z-index:20;padding:20px}
+.gate-box{width:min(380px,90vw);background:linear-gradient(160deg,#141428,#0d0d1c);border:1px solid rgba(0,240,255,.3);border-radius:20px;padding:28px;display:flex;flex-direction:column;gap:14px;box-shadow:0 0 50px rgba(0,240,255,.15)}
+.gate-box h2{margin:0}
+.err{color:var(--c3);font-size:13px;min-height:16px}
+.modal{position:fixed;inset:0;display:grid;place-items:center;background:rgba(4,4,10,.72);backdrop-filter:blur(6px);z-index:30;padding:20px;overflow:auto}
+.modal-box{width:min(660px,96vw);max-height:92vh;overflow:auto;background:linear-gradient(160deg,#141428,#0d0d1c);border:1px solid rgba(0,240,255,.25);border-radius:20px;padding:26px;display:flex;flex-direction:column;gap:14px;box-shadow:0 0 60px rgba(176,77,255,.25)}
+.modal-box h2{margin:0}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+label{display:flex;flex-direction:column;gap:6px;font-size:13px;color:var(--mut);font-weight:600}
+.actions{display:flex;justify-content:flex-end;gap:10px;margin-top:6px;flex-wrap:wrap}
+.colorin{height:44px;padding:4px;cursor:pointer}
+.sec{background:linear-gradient(160deg,#141428,#0e0e1d);border:1px solid var(--line);border-radius:16px;padding:20px;margin-bottom:16px;display:flex;flex-direction:column;gap:12px}
+.sec h3{margin:0;display:flex;align-items:center;gap:10px}
+.hide{display:none!important}
+.file{color:var(--mut);font-size:13px}
+.preview{width:70px;height:70px;border-radius:12px;border:1px solid var(--line);display:grid;place-items:center;font-size:34px;overflow:hidden;flex:0 0 auto}
+.preview img{width:100%;height:100%;object-fit:cover}
+@media(max-width:640px){.grid2,.grid3{grid-template-columns:1fr}.row{grid-template-columns:56px 1fr}.thumb{width:56px;height:56px}.row .acts{grid-column:1/-1;justify-content:flex-end}}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap bar">
+  <a class="logo" href="index.html">NEON<span>DEALS</span></a>
+  <span class="badge">Painel</span>
+  <span class="badge" id="cloudBadge">…</span>
+  <div class="spacer"></div>
+  <a class="ghost-link" href="index.html" target="_blank">Ver loja ↗</a>
+  <button id="logout" class="ghost-link">Sair</button>
+</div></header>
+
+<section id="gate" class="gate hide">
+  <form class="gate-box" id="gateForm">
+    <h2>Acesso ao painel</h2>
+    <p class="mut" style="margin:0">Digite a senha para gerenciar os produtos da loja.</p>
+    <input id="gatePass" type="password" placeholder="Senha" autocomplete="current-password">
+    <button class="btn" type="submit" style="justify-content:center">Entrar</button>
+    <div id="gateErr" class="err"></div>
+    <p class="mut" style="margin:0;font-size:12px">Senha padrão: <b>admin</b> (troque na aba “Identidade”).</p>
+  </form>
+</section>
+
+<main id="panel" class="wrap hide">
+<div class="tabs">
+  <button class="tab on" data-tab="produtos">Produtos</button>
+  <button class="tab" data-tab="identidade">Identidade</button>
+</div>
+
+<section id="tab-produtos" class="tabpane">
+  <div class="toolbar">
+    <input id="busca" type="search" placeholder="Buscar produto…">
+    <button id="novo" class="btn" type="button">+ Novo produto</button>
+    <span id="cont" class="mut"></span>
+  </div>
+  <div id="lista" class="lista"></div>
+</section>
+
+<section id="tab-identidade" class="tabpane hide">
+  <form class="sec" id="identForm">
+    <h3>Identidade da loja</h3>
+    <div class="grid2">
+      <label>Nome (parte 1)<input id="s_brandA" placeholder="NEON"></label>
+      <label>Nome (parte 2)<input id="s_brandB" placeholder="DEALS"></label>
+    </div>
+    <label>Texto do rodapé<textarea id="s_footer" rows="3"></textarea></label>
+    <div class="actions"><button class="btn" type="submit">Salvar identidade</button></div>
+  </form>
+  <form class="sec" id="passForm">
+    <h3>Senha do painel</h3>
+    <label>Nova senha<input id="p_new" type="text" placeholder="Nova senha"></label>
+    <div class="actions"><button class="btn" type="submit">Trocar senha</button></div>
+  </form>
+  <div class="sec">
+    <h3>Backup &amp; dados</h3>
+    <p class="mut" style="margin:0">Os dados ficam salvos neste navegador. Exporte um backup para não perder nada ou importe em outro computador.</p>
+    <div class="actions" style="justify-content:flex-start">
+      <button id="exportBtn" class="btn ghost" type="button">Exportar JSON</button>
+      <label class="btn ghost" style="flex-direction:row;align-items:center;cursor:pointer;margin:0">Importar JSON<input id="importFile" type="file" accept="application/json,.json" class="hide"></label>
+      <button id="resetBtn" class="btn danger" type="button">Restaurar original</button>
+    </div>
+  </div>
+  <div class="sec">
+    <h3>Nuvem (Supabase)</h3>
+    <p class="mut" id="cloudStatus" style="margin:0">Verificando conexão…</p>
+    <div class="actions" style="justify-content:flex-start">
+      <button id="upBtn" class="btn" type="button">Enviar produtos para a nuvem</button>
+      <button id="downBtn" class="btn ghost" type="button">Baixar da nuvem</button>
+    </div>
+    <p class="mut" style="margin:0;font-size:12px">Primeira vez? Rode o <code>supabase-schema.sql</code> no SQL Editor do Supabase para criar a tabela. Depois clique em “Enviar produtos para a nuvem”.</p>
+  </div>
+</section>
+
+</main>
+
+<div id="modal" class="modal hide">
+  <form id="form" class="modal-box">
+    <h2 id="formTitle">Novo produto</h2>
+    <label>Nome do produto<input id="f_nome" placeholder="Ex.: Fone Bluetooth Gamer RGB" required></label>
+    <div class="grid2">
+      <label>ID (opcional)<input id="f_id" placeholder="gerado automaticamente"></label>
+      <label>Emoji<input id="f_emoji" placeholder="🎧"></label>
+    </div>
+    <label>Imagem (caminho ou URL)<input id="f_img" placeholder="imgs/ps5.jpg ou https://..."></label>
+    <div style="display:flex;gap:14px;align-items:center">
+      <div class="preview" id="prev">📦</div>
+      <span class="mut">Pré-visualização. Se não houver imagem, aparece o emoji.</span>
+    </div>
+    <div class="grid2">
+      <label>Loja<select id="f_store"></select></label>
+      <label>Link de afiliado<input id="f_link" type="text" placeholder="https://..."></label>
+    </div>
+    <div class="grid3">
+      <label>Preço (R$)<input id="f_preco" type="number" step="0.01" min="0" placeholder="89.90"></label>
+      <label>Preço "de" (R$)<input id="f_de" type="number" step="0.01" min="0" placeholder="149.90"></label>
+      <label>Nota (0-5)<input id="f_nota" type="number" step="0.1" min="0" max="5" placeholder="4.8"></label>
+    </div>
+    <div class="grid2">
+      <label>Cor 1<input id="f_cor1" type="color" class="colorin"></label>
+      <label>Cor 2<input id="f_cor2" type="color" class="colorin"></label>
+    </div>
+    <label>Descrição<textarea id="f_desc" rows="3" placeholder="Texto exibido na página do produto"></textarea></label>
+    <label>Especificações (uma por linha)<textarea id="f_specs" rows="3" placeholder="Bluetooth 5.3&#10;Bateria de ate 30h"></textarea></label>
+    <div class="actions">
+      <button type="button" id="cancel" class="btn ghost">Cancelar</button>
+      <button type="submit" class="btn">Salvar produto</button>
+    </div>
+  </form>
+</div>
+
+<script src="config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="data.js"></script>
+<script>
+(function(){
+  'use strict';
+  var $=function(s){return document.querySelector(s);};
+  var brl=function(n){return (Number(n)||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});};
+  var esc=function(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c];});};
+  if(!window.Store){document.body.innerHTML='<p style="color:#ff2fb3;padding:40px;font-family:sans-serif">Não foi possível carregar data.js. Verifique se o arquivo está na mesma pasta.</p>';return;}
+  var STORES=Store.STORES;
+  var editingId=null;
+
+  /* ---- login ---- */
+  function authed(){return sessionStorage.getItem('neondeals.admin')==='1';}
+  function showGate(){$('#gate').classList.remove('hide');$('#panel').classList.add('hide');}
+  function showPanel(){$('#gate').classList.add('hide');$('#panel').classList.remove('hide');renderList();loadSettings();}
+  $('#gateForm').addEventListener('submit',function(e){
+    e.preventDefault();
+    if($('#gatePass').value===Store.settings.get().password){sessionStorage.setItem('neondeals.admin','1');$('#gateErr').textContent='';showPanel();}
+    else{$('#gateErr').textContent='Senha incorreta.';}
+  });
+  $('#logout').addEventListener('click',function(){sessionStorage.removeItem('neondeals.admin');showGate();});
+
+  /* ---- abas ---- */
+  Array.prototype.forEach.call(document.querySelectorAll('.tab'),function(t){
+    t.addEventListener('click',function(){
+      Array.prototype.forEach.call(document.querySelectorAll('.tab'),function(x){x.classList.remove('on');});
+      t.classList.add('on');
+      $('#tab-produtos').classList.toggle('hide',t.dataset.tab!=='produtos');
+      $('#tab-identidade').classList.toggle('hide',t.dataset.tab!=='identidade');
+    });
+  });
+
+  /* ---- marca ---- */
+  function applyBrand(){var s=Store.settings.get();var l=document.querySelector('.logo');if(l)l.innerHTML=s.brandA+'<span>'+s.brandB+'</span>';}
+
+  /* ---- lista ---- */
+  function renderList(){
+    var q=($('#busca').value||'').toLowerCase();
+    var all=Store.products.list();
+    var list=all.filter(function(p){return !q||(p.nome||'').toLowerCase().indexOf(q)>=0;});
+    $('#cont').textContent=all.length+' produto'+(all.length===1?'':'s')+(q?' • '+list.length+' encontrado'+(list.length===1?'':'s'):'');
+    if(!list.length){$('#lista').innerHTML='<div class="empty">'+(all.length?'Nenhum produto corresponde à busca.':'Nenhum produto ainda. Clique em “+ Novo produto”.')+'</div>';return;}
+    $('#lista').innerHTML=list.map(function(p){
+      var st=STORES[p.store]||{n:p.store,c:'#888'};
+      var c1=(p.cor&&p.cor[0])||'#222',c2=(p.cor&&p.cor[1])||'#111';
+      var thumb=p.img?'<img src="'+esc(p.img)+'" alt="" onerror="this.remove()">':esc(p.emoji||'📦');
+      return '<div class="row"><div class="thumb" style="background:linear-gradient(135deg,'+c1+','+c2+')">'+thumb+'</div>'
+        +'<div class="info"><div class="nome">'+esc(p.nome)+'</div><div class="sub"><span class="chipstore" style="color:'+st.c+'">'+esc(st.n)+'</span><span>'+brl(p.preco)+'</span>'+(p.de?'<span class="mut">de '+brl(p.de)+'</span>':'')+'<span>★ '+esc(p.nota)+'</span></div></div>'
+        +'<div class="acts"><button class="btn mini ghost" data-edit="'+esc(p.id)+'">Editar</button><button class="btn mini danger" data-del="'+esc(p.id)+'">Excluir</button></div></div>';
+    }).join('');
+  }
+  $('#busca').addEventListener('input',renderList);
+  $('#lista').addEventListener('click',function(e){
+    var b=e.target.closest('button');if(!b)return;
+    if(b.dataset.edit)openForm(b.dataset.edit);
+    if(b.dataset.del&&confirm('Excluir este produto?')){Store.products.remove(b.dataset.del);renderList();}
+  });
+
+  /* ---- formulario ---- */
+  function storeOptions(sel){return Object.keys(STORES).map(function(k){return '<option value="'+k+'"'+(k===sel?' selected':'')+'>'+esc(STORES[k].n)+'</option>';}).join('');}
+  function updatePreview(){
+    var v=$('#f_img').value.trim(),e=$('#f_emoji').value.trim()||'📦',box=$('#prev');
+    if(v){box.innerHTML='<img alt="">';var im=box.querySelector('img');im.onerror=function(){box.textContent=e;};im.src=v;}
+    else{box.textContent=e;}
+  }
+  function openForm(id){
+    editingId=id||null;
+    var p=id?Store.products.get(id):null;
+    $('#formTitle').textContent=p?'Editar produto':'Novo produto';
+    $('#f_nome').value=p?p.nome:'';
+    $('#f_id').value=p?p.id:'';
+    $('#f_emoji').value=p?(p.emoji||''):'';
+    $('#f_img').value=p?(p.img||''):'';
+    $('#f_store').innerHTML=storeOptions(p?p.store:'shopee');
+    $('#f_preco').value=(p&&p.preco!=null)?p.preco:'';
+    $('#f_de').value=(p&&p.de)?p.de:'';
+    $('#f_nota').value=(p&&p.nota!=null)?p.nota:'4.8';
+    $('#f_cor1').value=(p&&p.cor&&p.cor[0])||'#1b2a6b';
+    $('#f_cor2').value=(p&&p.cor&&p.cor[1])||'#6b1b8f';
+    $('#f_desc').value=p?(p.desc||''):'';
+    $('#f_specs').value=(p&&p.specs)?p.specs.join('\n'):'';
+    $('#f_link').value=p?(p.link||''):'';
+    updatePreview();
+    $('#modal').classList.remove('hide');
+  }
+  function closeForm(){$('#modal').classList.add('hide');editingId=null;}
+  $('#cancel').addEventListener('click',closeForm);
+  $('#modal').addEventListener('click',function(e){if(e.target===$('#modal'))closeForm();});
+  $('#f_img').addEventListener('input',updatePreview);
+  $('#f_emoji').addEventListener('input',updatePreview);
+  /* ---- salvar produto ---- */
+  $('#form').addEventListener('submit',function(e){
+    e.preventDefault();
+    var obj={
+      nome:$('#f_nome').value.trim(),
+      emoji:$('#f_emoji').value.trim(),
+      img:$('#f_img').value.trim(),
+      store:$('#f_store').value,
+      preco:parseFloat($('#f_preco').value)||0,
+      de:parseFloat($('#f_de').value)||0,
+      nota:parseFloat($('#f_nota').value)||0,
+      cor:[$('#f_cor1').value,$('#f_cor2').value],
+      desc:$('#f_desc').value.trim(),
+      specs:$('#f_specs').value.split('\n').map(function(s){return s.trim();}).filter(Boolean),
+      link:$('#f_link').value.trim()
+    };
+    if(!obj.nome){alert('Informe o nome do produto.');return;}
+    var iid=$('#f_id').value.trim();
+    if(editingId){obj.id=iid||editingId;Store.products.update(editingId,obj);}
+    else{if(iid)obj.id=iid;Store.products.add(obj);}
+    closeForm();renderList();
+  });
+  $('#novo').addEventListener('click',function(){openForm(null);});
+
+  /* ---- identidade / senha ---- */
+  function loadSettings(){var s=Store.settings.get();$('#s_brandA').value=s.brandA;$('#s_brandB').value=s.brandB;$('#s_footer').value=s.footer;}
+  $('#identForm').addEventListener('submit',function(e){
+    e.preventDefault();
+    Store.settings.set({brandA:$('#s_brandA').value.trim(),brandB:$('#s_brandB').value.trim(),footer:$('#s_footer').value.trim()});
+    applyBrand();alert('Identidade salva. Abra a loja para ver as mudanças.');
+  });
+  $('#passForm').addEventListener('submit',function(e){
+    e.preventDefault();
+    var np=$('#p_new').value;
+    if(np.length<3){alert('Use ao menos 3 caracteres.');return;}
+    Store.settings.set({password:np});$('#p_new').value='';alert('Senha atualizada.');
+  });
+
+  /* ---- backup / import / reset ---- */
+  function download(name,text){
+    var b=new Blob([text],{type:'application/json'}),u=URL.createObjectURL(b),a=document.createElement('a');
+    a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(u);
+  }
+  $('#exportBtn').addEventListener('click',function(){download('neondeals-dados.json',Store.exportJSON());});
+  $('#importFile').addEventListener('change',function(e){
+    var f=e.target.files[0];if(!f)return;
+    var r=new FileReader();
+    r.onload=function(){
+      try{var n=Store.importJSON(r.result);applyBrand();renderList();loadSettings();alert(n+' produto(s) importado(s).');}
+      catch(err){alert('Falha ao importar: '+err.message);}
+      e.target.value='';
+    };
+    r.readAsText(f);
+  });
+  $('#resetBtn').addEventListener('click',function(){
+    if(confirm('Restaurar os produtos e a identidade originais? Isso apaga suas alterações.')){
+      Store.products.reset();Store.settings.reset();applyBrand();renderList();loadSettings();
+    }
+  });
+
+  /* ---- nuvem ---- */
+  function updateCloud(){
+    var st=Store.status(), el=$('#cloudStatus'), ok=(st.mode==='supabase');
+    if(el){
+      el.innerHTML = ok
+        ? '<b style="color:var(--ok)">● Conectado ao Supabase</b> — tabela <code>'+esc(st.table)+'</code>. Os produtos ficam públicos para todos.'
+        : '<b style="color:var(--c3)">● Modo local</b> — os produtos ficam salvos só neste navegador.'+(st.error?' <span style="color:var(--mut)">('+esc(st.error)+')</span>':'');
+    }
+    var b=$('#cloudBadge');
+    if(b){ b.textContent=ok?'Nuvem':'Local'; b.style.borderColor=ok?'var(--ok)':'var(--c3)'; b.style.color=ok?'var(--ok)':'var(--c3)'; }
+    if($('#upBtn')) $('#upBtn').disabled=!ok;
+    if($('#downBtn')) $('#downBtn').disabled=!ok;
+  }
+  $('#upBtn').addEventListener('click',function(){
+    Store.cloud.uploadAll().then(function(n){alert(n+' produto(s) enviado(s) para a nuvem.');}).catch(function(e){alert('Falha ao enviar: '+e.message);});
+  });
+  $('#downBtn').addEventListener('click',function(){
+    Store.cloud.downloadAll().then(function(n){renderList();updateCloud();alert(n+' produto(s) baixado(s) da nuvem.');}).catch(function(e){alert('Falha ao baixar: '+e.message);});
+  });
+
+  /* ---- inicio ---- */
+  applyBrand();
+  if(authed())showPanel();else showGate();
+  Store.init().then(function(){renderList();updateCloud();});
+
+})();
+</script>
+
+
+</body>
+</html>

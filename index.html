@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>NeonDeals — Achadinhos de todas as lojas</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#07070d;--panel:#10101c;--panel2:#161628;--txt:#eef0ff;--mut:#8b8fb0;--c1:#00f0ff;--c2:#b04dff;--c3:#ff2fb3;--ok:#39ff88;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:dark;--ease:cubic-bezier(.22,1,.36,1);--spring:cubic-bezier(.34,1.56,.64,1)}
+*,*:before,*:after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--txt);font-family:Inter,system-ui,sans-serif;overflow-x:hidden}
+h1,h2,h3,.logo,.price{font-family:'Space Grotesk',Inter,sans-serif}
+a{color:inherit;text-decoration:none}
+#bg{position:fixed;inset:0;z-index:0;pointer-events:none}
+.wrap{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:0 20px}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:rgba(7,7,13,.75);backdrop-filter:blur(14px);border-bottom:1px solid rgba(0,240,255,.15)}
+.bar{display:flex;align-items:center;gap:16px;height:64px}
+.logo{font-weight:700;font-size:22px;letter-spacing:.5px;color:var(--c1);text-shadow:0 0 12px var(--c1)}
+.logo span{color:var(--c3);text-shadow:0 0 12px var(--c3)}
+.search{flex:1;max-width:520px;margin-left:auto;position:relative}
+.search input{width:100%;background:var(--panel);border:1px solid #26264a;border-radius:12px;color:var(--txt);padding:11px 14px;font:inherit;outline:none;transition:all .35s var(--ease)}
+.search input:focus{border-color:var(--c1);box-shadow:0 0 0 3px rgba(0,240,255,.15),0 0 20px rgba(0,240,255,.2)}
+.hero{position:relative;min-height:max(620px,calc(100vh - 64px));display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 0 22vh}
+.hero>:not(.marq){position:relative;z-index:2}
+.w{display:inline-block;animation:wordIn 1.1s var(--spring) backwards;animation-delay:calc(.15s + var(--i)*.09s)}
+@keyframes wordIn{from{opacity:0;transform:translateY(14px)}}
+.marq{position:absolute;bottom:0;left:50%;width:100vw;margin-left:-50vw;height:40%;overflow:hidden;z-index:0;-webkit-mask-image:linear-gradient(to bottom,transparent,#000 22%,#000 78%,transparent);mask-image:linear-gradient(to bottom,transparent,#000 22%,#000 78%,transparent);animation:fadeUp 1.4s var(--ease) .5s backwards}
+.track{display:flex;width:max-content;padding-top:28px;animation:marq 70s linear infinite}
+.track:hover{animation-play-state:paused}
+@keyframes marq{from{transform:translateX(-50%)}to{transform:none}}
+.mq{display:block;position:relative;flex-shrink:0;margin-right:16px;height:clamp(190px,26vw,260px);aspect-ratio:3/4;border-radius:18px;overflow:hidden;border:1px solid rgba(255,255,255,.1);box-shadow:0 14px 34px rgba(0,0,0,.65);transition:transform .7s var(--ease),border-color .5s var(--ease)}
+.mq:hover{transform:scale(1.07);border-color:var(--c1)}
+.mq .pic{padding-bottom:0}.mq .pic .em{font-size:92px}
+.dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--ok);margin-right:9px;vertical-align:1px;box-shadow:0 0 10px var(--ok);animation:dotp 1.8s ease-in-out infinite}
+.rot{display:inline-grid;overflow:hidden;padding:.1em .12em .22em;margin:-.1em -.12em -.22em;font-size:1.1em;filter:drop-shadow(0 0 18px rgba(176,77,255,.5))}
+.rot span{grid-area:1/1;opacity:0;text-align:center;background:linear-gradient(90deg,var(--c1),var(--c2),var(--c3),var(--c1));background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent}
+.rot .on{animation:rin .9s var(--ease) both,flow 5s linear infinite}
+.rot .out{animation:rout .9s var(--ease) both,flow 5s linear infinite}
+@keyframes rin{from{opacity:0;transform:translateY(70%);filter:blur(8px)}to{opacity:1;transform:none;filter:blur(0)}}
+@keyframes rout{from{opacity:1;transform:none;filter:blur(0)}to{opacity:0;transform:translateY(-70%);filter:blur(8px)}}
+@keyframes flow{to{background-position:200% 0}}
+@keyframes bob{50%{transform:translateY(-7px)}}
+@keyframes dotp{50%{opacity:.35;transform:scale(.7)}}
+@keyframes glowPulse{50%{box-shadow:0 0 56px rgba(176,77,255,.8)}}
+.tag{display:inline-block;padding:6px 14px;border:1px solid var(--c2);border-radius:99px;color:var(--c2);font-size:13px;font-weight:600;box-shadow:0 0 18px rgba(176,77,255,.35);animation:fadeUp 1.1s var(--ease) both}
+.hero h1{color:var(--txt);font-size:clamp(34px,7vw,72px);line-height:1.05;margin:22px 0 16px;letter-spacing:-.03em;animation:bob 7s ease-in-out 1.5s infinite}
+.grad{background:linear-gradient(90deg,var(--c1),var(--c2),var(--c3));-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 18px rgba(176,77,255,.5))}
+.hero p{color:var(--mut);max-width:620px;margin:0 auto 30px;font-size:18px;animation:fadeUp 1.1s var(--ease) .2s both}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:14px 28px;border-radius:12px;font-weight:700;border:0;cursor:pointer;font:700 16px 'Space Grotesk',sans-serif;color:#05050a;background:linear-gradient(90deg,var(--c1),var(--c2));box-shadow:0 0 28px rgba(0,240,255,.45);transition:transform .5s var(--spring),box-shadow .5s var(--ease),background .4s var(--ease),color .4s var(--ease)}
+.btn:hover{transform:translateY(-3px) scale(1.03);box-shadow:0 0 44px rgba(176,77,255,.7)}
+.btn.ghost{background:transparent;color:var(--c1);border:1px solid var(--c1);box-shadow:inset 0 0 14px rgba(0,240,255,.15)}
+.stores{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:40px;animation:fadeUp 1.1s var(--ease) .35s both}
+.chip{padding:9px 18px;border-radius:99px;background:var(--panel);border:1px solid #26264a;color:var(--mut);cursor:pointer;font:600 14px Inter,sans-serif;transition:all .35s var(--ease)}
+.chip:hover{color:var(--txt);border-color:var(--c1)}
+.chip.on{color:#05050a;background:var(--c1);border-color:var(--c1);box-shadow:0 0 20px rgba(0,240,255,.55)}
+.sec-h{display:flex;align-items:end;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:30px 0 20px}
+.sec-h h2{margin:0;font-size:28px}
+.sec-h h2:before{content:"";display:inline-block;width:6px;height:26px;background:var(--c3);box-shadow:0 0 14px var(--c3);border-radius:3px;margin-right:12px;vertical-align:-4px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:22px;padding-bottom:70px}
+.card{--o:0;--mx:50%;--my:50%;position:relative;border-radius:22px;padding:1px;cursor:pointer;display:flex;height:400px;background:linear-gradient(160deg,#2c2c58,#14142a);box-shadow:0 14px 40px rgba(0,0,0,.55),0 26px 70px rgba(0,240,255,calc(.22*var(--o))),0 0 44px rgba(176,77,255,calc(.22*var(--o)));animation:cardIn 1s var(--ease) backwards;will-change:transform}
+.card:before{content:"";position:absolute;inset:0;border-radius:inherit;background:radial-gradient(280px circle at var(--mx) var(--my),var(--c1),var(--c2) 45%,transparent 72%);opacity:var(--o)}
+.inner{position:absolute;inset:1px;background:#0e0e1d;border-radius:21px;overflow:hidden}
+.inner:after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(420px circle at var(--mx) var(--my),rgba(255,255,255,.08),transparent 60%);opacity:var(--o)}
+.pic{position:absolute;inset:0;display:grid;place-items:center;padding-bottom:96px;overflow:hidden}
+.pic:before{content:"";position:absolute;width:220px;height:220px;border-radius:50%;background:rgba(255,255,255,.16);filter:blur(34px);transition:transform .9s var(--ease),opacity .4s}
+.pic .em{font-size:132px;position:relative;z-index:1;filter:drop-shadow(0 14px 22px rgba(0,0,0,.6));transition:transform .9s var(--spring)}
+.card:hover .em{transform:translateY(-8px) scale(1.15) rotate(-8deg)}
+.card:hover .pic:before{transform:scale(1.6)}
+.pic img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.pic:after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(5,5,12,.75),transparent 58%)}
+.panel{position:absolute;left:14px;right:14px;bottom:14px;height:98px;z-index:3;padding:14px 16px;border-radius:16px;background:linear-gradient(160deg,#1a1a38,#0d0d1c);border:1px solid rgba(0,240,255,.3);box-shadow:0 18px 36px rgba(0,0,0,.65),0 0 24px rgba(0,240,255,.14);display:flex;flex-direction:column;justify-content:space-between;pointer-events:none}
+.panel h3{margin:0;font-size:15px;line-height:1.3;font-weight:500;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.pr{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.panel .off{position:static;font-size:12px;padding:4px 10px}
+.rate{position:absolute;top:14px;right:14px;z-index:3;display:inline-flex;align-items:center}
+.has .em,.pic.has:before{opacity:0}.big.has .em{display:none}
+.off{position:absolute;top:14px;left:14px;z-index:2;background:linear-gradient(90deg,var(--c3),#ff5f6d);color:#fff;font:700 13px 'Space Grotesk';padding:5px 11px;border-radius:99px;box-shadow:0 0 18px rgba(255,47,179,.7)}
+.store{position:absolute;top:14px;left:14px;z-index:3;transform:translateZ(36px);font:700 11px Inter;padding:5px 10px;border-radius:99px;background:rgba(7,7,13,.8);backdrop-filter:blur(6px);border:1px solid currentColor}
+.body{padding:18px;display:flex;flex-direction:column;gap:12px;flex:1}
+.body h3{margin:0;font-size:16px;line-height:1.35;font-weight:500;min-height:44px}
+.old{color:var(--mut);text-decoration:line-through;font-size:13px}
+.price{font-size:28px;font-weight:700;color:var(--ok);text-shadow:0 0 16px rgba(57,255,136,.45);line-height:1.1}
+.eco{font-size:12px;color:var(--c1);margin-top:4px}
+.stars{display:flex}
+.stars,.rate{align-items:center;gap:2px;color:#ffd23f}
+.stars svg,.rate svg{width:15px;height:15px;filter:drop-shadow(0 2px 3px rgba(0,0,0,.8))}
+svg.e{opacity:.3}
+.n{margin-left:5px;font:600 12px Inter,sans-serif;text-shadow:0 2px 4px rgba(0,0,0,.8)}
+.body .btn{margin-top:auto;justify-content:center;padding:12px;font-size:14px}
+.btn.ghost:hover{background:linear-gradient(90deg,var(--c1),var(--c2));color:#05050a}
+.ar{display:inline-block;transition:transform .5s var(--ease)}
+.card:hover .ar,.btn:hover .ar{transform:translateX(6px)}
+@keyframes cardIn{from{opacity:0;transform:perspective(900px) translateY(50px) scale(.94)}}
+.empty{text-align:center;color:var(--mut);padding:60px 0;grid-column:1/-1}
+/* produto */
+.back{display:inline-block;margin:26px 0 18px;color:var(--c1);font-weight:600;cursor:pointer}
+.prod{display:grid;grid-template-columns:1fr 1fr;gap:40px;padding-bottom:70px;animation:fadeUp .6s both}
+.big{height:min(460px,60vw);border-radius:24px;display:grid;place-items:center;font-size:170px;position:relative;overflow:hidden;border:1px solid var(--c1);box-shadow:0 0 50px rgba(0,240,255,.25),inset 0 0 60px rgba(0,0,0,.4)}
+.big img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.big .em{animation:float 4s ease-in-out infinite;filter:drop-shadow(0 20px 30px rgba(0,0,0,.6))}
+.info h1{font-size:clamp(26px,4vw,38px);margin:10px 0}
+.info .price{font-size:48px;margin:8px 0 2px}
+.info p{color:var(--mut);line-height:1.7}
+.specs{list-style:none;padding:0;margin:18px 0;display:grid;gap:8px}
+.specs li{background:var(--panel);border:1px solid #22223f;padding:10px 14px;border-radius:10px;font-size:14px}
+.specs li:before{content:"▸ ";color:var(--c1)}
+.buy{width:100%;justify-content:center;font-size:18px;padding:18px;animation:pulse 2.2s infinite}
+.note{font-size:12px;color:var(--mut);margin-top:12px;text-align:center}
+footer{position:relative;z-index:1;border-top:1px solid #1d1d38;padding:30px 20px;text-align:center;color:var(--mut);font-size:13px;background:rgba(7,7,13,.8)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+@keyframes float{50%{transform:translateY(-16px) rotate(3deg)}}
+@keyframes pulse{0%,100%{box-shadow:0 0 28px rgba(0,240,255,.45)}50%{box-shadow:0 0 52px rgba(176,77,255,.8)}}
+@media(max-width:760px){.prod{grid-template-columns:1fr}.big{font-size:120px}}
+</style>
+</head>
+<body>
+<canvas id="bg"></canvas>
+<header><div class="wrap bar">
+  <a class="logo" href="#/">NEON<span>DEALS</span></a>
+  <div class="search"><input id="q" type="search" placeholder="Buscar produtos…" autocomplete="off"></div>
+</div></header>
+<main class="wrap" id="app"></main>
+<footer>NeonDeals reúne ofertas de várias lojas. Ao clicar, você é redirecionado ao site da loja parceira, onde a compra é feita. Podemos receber comissão por vendas, sem custo extra para você. Preços e disponibilidade podem mudar na loja.</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<!-- Configuração + Supabase + camada de dados (produtos + identidade) -->
+<script src="config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="data.js"></script>
+<script>
+/* ========= PRODUTOS =========
+ Vêm da camada de dados (data.js) — geridos pelo dashboard (admin.html).
+ store: shopee | ml | amazon | ali   |   link = SEU LINK DE AFILIADO
+ img: caminho ou URL da foto. Sem foto, aparece o emoji. */
+const STORES=Store.STORES;
+let PRODUCTS=Store.products.list();
+/* ============================================= */
+const $=s=>document.querySelector(s),app=$('#app'),brl=n=>n.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+let filtro='all',busca='';
+const off=p=>Math.round((1-p.preco/p.de)*100);
+const star=c=>`<svg class="${c}" viewBox="0 0 24 24"><path d="M12 3.6l2.5 5.3 5.8.8-4.2 4.1 1 5.8L12 16.8 6.9 19.6l1-5.8-4.2-4.1 5.8-.8z" fill="currentColor" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round"/></svg>`;
+const stars=n=>{const r=Math.round(n);return Array.from({length:5},(_,i)=>star(i<r?'':'e')).join('')+`<span class="n">${n.toFixed(1)}</span>`};
+const pic=(p,c)=>`<div class="${c}" style="background:linear-gradient(135deg,${p.cor[0]},${p.cor[1]})"><span class="em">${p.emoji}</span>${p.img?`<img src="${p.img}" alt="${p.nome}" loading="lazy" onload="this.parentNode.classList.add('has')" onerror="this.remove()">`:''}`;
+let rotT;
+function startRot(){clearInterval(rotT);const ws=[...document.querySelectorAll('#rot span')];if(!ws.length)return;let i=0;ws[0].className='on';
+ rotT=setInterval(()=>{if(!document.body.contains(ws[0]))return clearInterval(rotT);ws[i].className='out';i=(i+1)%ws.length;ws[i].className='on'},2800)}
+function home(){
+  const mq=[...PRODUCTS,...PRODUCTS],item=(p,i)=>`<a class="mq" href="#/produto/${p.id}" tabindex="-1" style="rotate:${i%2?5:-2}deg">${pic(p,'pic')}</div></a>`;
+  app.innerHTML=`<section class="hero"><span class="tag"><i class="dot"></i>Ofertas de todas as lojas num só lugar</span>
+  <h1><span class="w" style="--i:0">Os</span> <span class="w" style="--i:1">melhores</span><br><span class="w" style="--i:2"><span class="rot" id="rot"><span>achadinhos</span><span>ofertas</span><span>promoções</span><span>descontos</span></span></span><br><span class="w" style="--i:3">da</span> <span class="w" style="--i:4">internet,</span> <span class="w" style="--i:5">reunidos.</span></h1>
+  <p style="animation-delay:.75s">Shopee, Mercado Livre, Amazon e AliExpress. Selecionamos os produtos, você escolhe e compra direto na loja.</p>
+  <a class="btn" href="#produtos" style="animation:fadeUp 1.1s var(--ease) .9s backwards,glowPulse 3s ease-in-out 2.2s infinite" onclick="event.preventDefault();document.getElementById('produtos').scrollIntoView({behavior:'smooth'})">Ver ofertas →</a>
+  <div class="marq"><div class="track">${mq.concat(mq).map(item).join('')}</div></div></section>
+  <div class="sec-h" id="produtos"><h2>Ofertas em destaque</h2><span style="color:var(--mut)" id="cnt"></span></div>
+  <div class="stores" id="chips" style="margin:0 0 26px;justify-content:flex-start;animation:none"></div>
+  <div class="grid" id="grid"></div>`;
+  $('#chips').innerHTML=`<button class="chip" data-s="all">Todas</button>`+Object.entries(STORES).map(([k,v])=>`<button class="chip" data-s="${k}">${v.n}</button>`).join('');
+  $('#chips').onclick=e=>{const s=e.target.dataset.s;if(s){filtro=s;lista()}};
+  lista();startRot();
+}
+function lista(){
+  document.querySelectorAll('.chip').forEach(c=>c.classList.toggle('on',c.dataset.s===filtro));
+  const t=busca.toLowerCase(),l=PRODUCTS.filter(p=>(filtro==='all'||p.store===filtro)&&p.nome.toLowerCase().includes(t));
+  $('#cnt').textContent=l.length+' produto'+(l.length===1?'':'s');
+  $('#grid').innerHTML=l.length?l.map((p,i)=>{const s=STORES[p.store];return `<a class="card" href="#/produto/${p.id}" style="animation-delay:${i*90}ms"><div class="inner">${pic(p,'pic')}</div></div>
+  <span class="rate">${stars(p.nota)}</span>
+  <div class="panel"><h3>${p.nome}</h3><div class="pr"><span class="price">${brl(p.preco)}</span><span class="off">-${off(p)}%</span></div></div></a>`}).join(''):'<div class="empty">Nenhum produto encontrado 😕</div>';
+  if(matchMedia('(hover:hover)').matches)document.querySelectorAll('.card').forEach(tilt);
+}
+function tilt(c){
+ const A={rx:0,ry:0,ty:0,mx:50,my:50,o:0},T={...A};let raf=0;
+ const pt=e=>{const r=c.getBoundingClientRect();return[(e.clientX-r.left)/r.width,(e.clientY-r.top)/r.height]};
+ const run=()=>{let busy=false;for(const k in A){const d=T[k]-A[k];A[k]+=d*(k[0]==='m'?.22:.09);if(Math.abs(d)>.02)busy=true}
+  c.style.transform=`perspective(900px) translateY(${A.ty}px) rotateX(${A.rx}deg) rotateY(${A.ry}deg)`;
+  c.style.setProperty('--o',A.o);c.style.setProperty('--mx',A.mx+'%');c.style.setProperty('--my',A.my+'%');
+  raf=busy?requestAnimationFrame(run):0};
+ const go=()=>{if(!raf)raf=requestAnimationFrame(run)};
+ c.addEventListener('pointerenter',e=>{const[x,y]=pt(e);A.mx=T.mx=x*100;A.my=T.my=y*100;T.ty=-10;T.o=1;go()});
+ c.addEventListener('pointermove',e=>{const[x,y]=pt(e);T.ry=(x-.5)*12;T.rx=(.5-y)*10;T.mx=x*100;T.my=y*100;go()});
+ c.addEventListener('pointerleave',()=>{T.rx=T.ry=T.ty=T.o=0;go()})}
+function produto(id){
+  const p=PRODUCTS.find(x=>x.id===id);if(!p)return location.hash='#/';
+  const s=STORES[p.store];
+  app.innerHTML=`<a class="back" href="#/">← Voltar às ofertas</a><section class="prod">
+  ${pic(p,'big')}</div>
+  <div class="info"><span class="store" style="position:static;color:${s.c};display:inline-block">${s.n}</span>
+  <h1>${p.nome}</h1><div class="stars">${stars(p.nota)}</div>
+  <div class="old" style="margin-top:14px">De ${brl(p.de)} <b style="color:var(--c3)">(-${off(p)}%)</b></div>
+  <div class="price">${brl(p.preco)}</div>
+  <p>${p.desc}</p><ul class="specs">${p.specs.map(x=>`<li>${x}</li>`).join('')}</ul>
+  <a class="btn buy" href="${p.link}" target="_blank" rel="sponsored noopener noreferrer">Ir para a oferta na ${s.n} ↗</a>
+  <div class="note">Você será redirecionado para a loja. O preço final é o exibido lá.</div></div></section>`;
+}
+function rota(){const m=location.hash.match(/^#\/produto\/(.+)$/);m?produto(m[1]):home();window.scrollTo(0,0)}
+addEventListener('hashchange',rota);rota();
+/* Re-renderiza quando os dados mudam (painel em outra aba / nuvem) e conecta ao Supabase */
+Store.onChange(()=>{PRODUCTS=Store.products.list();const m=location.hash.match(/^#\/produto\/(.+)$/);m?produto(m[1]):home();});
+Store.init();
+$('#q').oninput=e=>{busca=e.target.value;if(!$('#grid')){location.hash='#/';return}lista()};
+
+/* ========= three.js ========= */
+try{
+const cv=$('#bg'),R=new THREE.WebGLRenderer({canvas:cv,alpha:true,antialias:true}),S=new THREE.Scene(),C=new THREE.PerspectiveCamera(60,1,.1,100);
+C.position.z=9;R.setPixelRatio(Math.min(devicePixelRatio,2));
+const N=1100,pos=new Float32Array(N*3),col=new Float32Array(N*3),sz=new Float32Array(N),cbase=new Float32Array(N*3),sbase=new Float32Array(N),tw=[];let nxt=1;
+for(let i=0;i<N;i++){pos.set([(Math.random()-.5)*40,(Math.random()-.5)*40,(Math.random()-.5)*30],i*3);const v=.4+Math.random()*.3;cbase.set([v,v,v+.03],i*3);sbase[i]=.045+Math.random()*.04}
+col.set(cbase);sz.set(sbase);
+const cvs=document.createElement('canvas');cvs.width=cvs.height=64;const cx=cvs.getContext('2d'),gr=cx.createRadialGradient(32,32,0,32,32,32);
+gr.addColorStop(0,'rgba(255,255,255,1)');gr.addColorStop(.5,'rgba(255,255,255,1)');gr.addColorStop(.72,'rgba(255,255,255,.3)');gr.addColorStop(1,'rgba(255,255,255,0)');cx.fillStyle=gr;cx.fillRect(0,0,64,64);
+const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(pos,3));g.setAttribute('aColor',new THREE.BufferAttribute(col,3));g.setAttribute('aSize',new THREE.BufferAttribute(sz,1));
+const mat=new THREE.ShaderMaterial({uniforms:{map:{value:new THREE.CanvasTexture(cvs)},uScale:{value:500}},transparent:true,depthWrite:false,
+vertexShader:'attribute vec3 aColor;attribute float aSize;uniform float uScale;varying vec3 vC;void main(){vC=aColor;vec4 mv=modelViewMatrix*vec4(position,1.0);gl_PointSize=aSize*uScale/(-mv.z);gl_Position=projectionMatrix*mv;}',
+fragmentShader:'uniform sampler2D map;varying vec3 vC;void main(){vec4 t=texture2D(map,gl_PointCoord);gl_FragColor=vec4(vC,t.a*.8);}'});
+const pts=new THREE.Points(g,mat);S.add(pts);
+function fit(){R.setSize(innerWidth,innerHeight,false);C.aspect=innerWidth/innerHeight;C.updateProjectionMatrix();mat.uniforms.uScale.value=innerHeight*R.getPixelRatio()/(2*Math.tan(Math.PI/6))}
+fit();addEventListener('resize',fit);
+let mx=0,my=0,sy=0,tx=0,ty=0,ts=0;const V=new THREE.Vector3();
+addEventListener('pointermove',e=>{tx=e.clientX/innerWidth-.5;ty=e.clientY/innerHeight-.5});
+addEventListener('scroll',()=>ts=scrollY/innerHeight);
+function pick(){pts.updateMatrixWorld();for(let k=0;k<40;k++){const i=(Math.random()*N)|0;V.set(pos[i*3],pos[i*3+1],pos[i*3+2]).applyMatrix4(pts.matrixWorld).project(C);if(Math.abs(V.x)<.95&&Math.abs(V.y)<.95&&V.z<1)return i}return -1}
+(function loop(t){t*=.001;
+ mx+=(tx-mx)*.05;my+=(ty-my)*.05;sy+=(ts-sy)*.06;
+ pts.rotation.y=t*.03+mx*1.1;pts.rotation.x=my*.8+sy*.4;pts.rotation.z=mx*.25;
+ pts.position.x=-mx*2.5;pts.position.y=my*2+sy*3;
+ C.position.x+=(mx*4-C.position.x)*.04;C.position.y+=(-my*3-C.position.y)*.04;C.lookAt(0,0,0);
+ if(t>nxt){const i=pick();if(i>=0)tw.push({i,t0:t});nxt=t+.4+Math.random()*1.2}
+ if(tw.length){for(let j=tw.length-1;j>=0;j--){const w=tw[j],i=w.i,u=(t-w.t0)/.5,p=u>=1?0:Math.sin(Math.PI*u);
+  for(let c=0;c<3;c++)col[i*3+c]=cbase[i*3+c]+(1-cbase[i*3+c])*p;sz[i]=sbase[i]*(1+1.5*p);if(u>=1)tw.splice(j,1)}
+  g.attributes.aColor.needsUpdate=true;g.attributes.aSize.needsUpdate=true}
+ R.render(S,C);requestAnimationFrame(loop)})(0);
+}catch(e){console.warn('WebGL indisponível',e)}
+</script>
+<script>
+/* Aplica a identidade da loja (nome + rodapé) definida no painel (admin.html) */
+(function(){
+  try{
+    var s=Store.settings.get();
+    var logo=document.querySelector('.logo');
+    if(logo) logo.innerHTML=s.brandA+'<span>'+s.brandB+'</span>';
+    var f=document.querySelector('footer');
+    if(f) f.textContent=s.footer;
+    document.title=(s.brandA+' '+s.brandB).trim()+' — Achadinhos de todas as lojas';
+  }catch(e){console.warn('NeonDeals: identidade',e);}
+})();
+</script>
+</body>
+</html>
