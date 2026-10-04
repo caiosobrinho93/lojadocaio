@@ -112,13 +112,34 @@ main{padding:30px 0 70px}
 .btn .ic{font-size:15px;line-height:1}
 
 /* ---- lista de produtos ---- */
-.thead,.row{display:grid;grid-template-columns:56px minmax(0,1fr) 130px 100px 132px;gap:16px;align-items:center}
+.thead,.row{display:grid;grid-template-columns:34px 56px minmax(0,1fr) 130px 100px 132px;gap:16px;align-items:center}
 .thead{padding:11px 18px;background:rgba(0,0,0,.28);border-bottom:1px solid var(--line);
-  font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
+  font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);position:sticky;top:0;z-index:5;backdrop-filter:blur(10px)}
+.th-sort{display:inline-flex;align-items:center;gap:6px;border:0;background:none;color:inherit;font:inherit;
+  letter-spacing:inherit;text-transform:inherit;cursor:pointer;padding:2px 4px;margin:-2px -4px;border-radius:6px;transition:.2s var(--ease)}
+.th-sort:hover{color:var(--txt)}
+.th-sort.on{color:var(--c1)}
+.th-sort i{font-style:normal;opacity:0;transition:.2s var(--ease);font-size:10px}
+.th-sort.on i{opacity:1}
 .rows{max-height:none}
-.row{padding:13px 18px;border-bottom:1px solid var(--line);transition:.26s var(--ease);position:relative}
+.row{padding:13px 18px;border-bottom:1px solid var(--line);transition:.26s var(--ease);position:relative;cursor:pointer}
 .row:last-child{border-bottom:0}
 .row:hover{background:rgba(0,240,255,.045)}
+.row.sel{background:rgba(0,240,255,.08)}
+.row.sel::before{background:linear-gradient(var(--c1),var(--c2))}
+.chk{display:grid;place-items:center}
+.chk input{width:16px;height:16px;accent-color:var(--c1);cursor:pointer}
+/* barra de ações em massa */
+.bulkbar{display:flex;align-items:center;gap:11px;flex-wrap:wrap;padding:12px 18px;
+  background:rgba(0,240,255,.07);border-bottom:1px solid var(--line2);font-size:13.6px;font-weight:600}
+.bulkbar b{color:var(--c1)}
+.bulkbar .spacer{flex:1}
+.kbd-hint{display:inline-flex;align-items:center;gap:6px;color:var(--dim);font-size:12px;font-weight:500}
+mark{background:rgba(0,240,255,.25);color:#fff;border-radius:3px;padding:0 2px}
+/* skeleton de carregamento */
+.sk{height:52px;border-radius:14px;margin:13px 18px;background:linear-gradient(90deg,var(--panel2) 25%,var(--raise) 50%,var(--panel2) 75%);
+  background-size:200% 100%;animation:shimmer 1.3s infinite}
+@keyframes shimmer{from{background-position:200% 0}to{background-position:-200% 0}}
 .row::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:transparent;transition:.26s}
 .row:hover::before{background:linear-gradient(var(--c1),var(--c2))}
 .thumb{width:52px;height:52px;border-radius:14px;display:grid;place-items:center;font-size:26px;
@@ -238,8 +259,8 @@ kbd{font-family:'Space Grotesk';background:var(--bg);border:1px solid var(--line
 @media(max-width:940px){.stats{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:860px){
   .thead{display:none}
-  .row{grid-template-columns:52px minmax(0,1fr);gap:13px;padding:14px}
-  .row .c-price,.row .c-rate{grid-column:2}
+  .row{grid-template-columns:34px 52px minmax(0,1fr);gap:13px;padding:14px}
+  .row .c-price,.row .c-rate{grid-column:3}
   .row .acts{grid-column:1/-1;justify-content:flex-start}
   .grid3{grid-template-columns:1fr 1fr}
   .nav{order:3;width:100%;margin:0;overflow:auto}
@@ -298,8 +319,25 @@ kbd{font-family:'Space Grotesk';background:var(--bg);border:1px solid var(--line
         <input id="busca" type="search" placeholder="Buscar por nome ou id…">
       </div>
       <div class="chips" id="chips"></div>
+      <div class="spacer"></div>
+      <span class="kbd-hint"><kbd>/</kbd> busca <kbd>N</kbd> novo <kbd>Esc</kbd> fecha</span>
     </div>
-    <div class="thead"><span></span><span>Produto</span><span>Preço</span><span>Nota</span><span style="text-align:right">Ações</span></div>
+    <div class="bulkbar hide" id="bulkbar">
+      <span><b id="bulkN">0</b> selecionado(s)</span>
+      <select id="bulkStoreSel" aria-label="Loja de destino"></select>
+      <button class="mini" id="bulkStore" type="button">🏷 Mover</button>
+      <button class="mini del" id="bulkDel" type="button">🗑 Excluir</button>
+      <span class="spacer"></span>
+      <button class="mini" id="bulkClear" type="button">Limpar seleção</button>
+    </div>
+    <div class="thead">
+      <span class="chk"><input type="checkbox" id="selAll" aria-label="Selecionar todos"></span>
+      <span></span>
+      <span><button class="th-sort on" data-sort="nome" type="button">Produto <i>▲</i></button></span>
+      <span><button class="th-sort" data-sort="preco" type="button">Preço <i>▲</i></button></span>
+      <span><button class="th-sort" data-sort="nota" type="button">Nota <i>▲</i></button></span>
+      <span style="text-align:right">Ações</span>
+    </div>
     <div id="lista" class="rows"></div>
   </div>
 </section>
@@ -532,20 +570,123 @@ kbd{font-family:'Space Grotesk';background:var(--bg);border:1px solid var(--line
     filtro=b.dataset.s;renderChips();render();
   });
 
+  /* ---------- ordenação + seleção ---------- */
+  var ORD={key:'nome',dir:1};
+  var SEL={};
+  function selCount(){return Object.keys(SEL).filter(function(k){return SEL[k]}).length}
+  function sortList(l){
+    var k=ORD.key,d=ORD.dir;
+    return l.slice().sort(function(a,b){
+      var x,y;
+      if(k==='nome'){x=String(a.nome||'').toLowerCase();y=String(b.nome||'').toLowerCase();}
+      else if(k==='preco'){x=Number(a.preco)||0;y=Number(b.preco)||0;}
+      else{x=Number(a.nota)||0;y=Number(b.nota)||0;}
+      if(x===y)return String(a.nome||'').toLowerCase()<String(b.nome||'').toLowerCase()?-1:1;
+      return x<y?-d:d;
+    });
+  }
+  function syncBulk(){
+    var n=selCount();
+    $('#bulkN').textContent=n;
+    $('#bulkbar').classList.toggle('hide',n===0);
+    var all=$('#lista').querySelectorAll('input[data-sel]');
+    var on=0;Array.prototype.forEach.call(all,function(c){if(c.checked)on++});
+    var sa=$('#selAll');sa.checked=on>0&&on===all.length;sa.indeterminate=on>0&&on<all.length;
+  }
+  function clearSel(){SEL={};render()}
+  Array.prototype.forEach.call(document.querySelectorAll('.th-sort'),function(b){
+    b.addEventListener('click',function(){
+      var k=b.dataset.sort;
+      if(ORD.key===k)ORD.dir*=-1;else{ORD.key=k;ORD.dir=1}
+      Array.prototype.forEach.call(document.querySelectorAll('.th-sort'),function(x){
+        x.classList.toggle('on',x.dataset.sort===ORD.key);
+        var i=x.querySelector('i');if(i)i.textContent=ORD.dir===1?'▲':'▼';
+      });
+      render();
+    });
+  });
+  $('#selAll').addEventListener('change',function(){
+    var on=this.checked;
+    Store.products.list().forEach(function(p){SEL[p.id]=on});
+    render();
+  });
+  $('#bulkClear').addEventListener('click',clearSel);
+  $('#bulkDel').addEventListener('click',function(){
+    var ids=Object.keys(SEL).filter(function(k){return SEL[k]});
+    if(!ids.length)return;
+    ask('Excluir '+ids.length+' produto(s)','Isso apaga os itens selecionados. Não dá para desfazer.','Excluir todos').then(function(y){
+      if(!y)return;
+      ids.forEach(function(id){Store.products.remove(id)});
+      SEL={};render();toast(ids.length+' produto(s) excluído(s).');
+    });
+  });
+  $('#bulkStore').addEventListener('click',function(){
+    var ids=Object.keys(SEL).filter(function(k){return SEL[k]});
+    if(!ids.length)return;
+    if(locked()){toast(lockMsg(),'err');return}
+    var to=$('#bulkStoreSel').value;
+    if(!to){toast('Escolha a loja de destino.','err');return}
+    ask('Mover '+ids.length+' produto(s)','Todos os itens selecionados passarão para “'+esc(STORES[to].n)+'”.','Mover').then(function(y){
+      if(!y)return;
+      ids.forEach(function(id){Store.products.update(id,{store:to})});
+      SEL={};render();toast(ids.length+' produto(s) movido(s) para '+STORES[to].n+'.');
+    });
+  });
+
+  /* ---------- atalhos de teclado ---------- */
+  document.addEventListener('keydown',function(e){
+    var tag=(e.target.tagName||'').toLowerCase();
+    var typing=tag==='input'||tag==='textarea'||tag==='select';
+    if(e.key==='Escape'){
+      if(!$('#modal').classList.contains('hide')){closeForm();return}
+      if(!$('#confirmOv').classList.contains('hide')){$('#cfNo').click();return}
+      if(typing){e.target.blur();return}
+      if(selCount()){clearSel();return}
+    }
+    if(typing||e.ctrlKey||e.metaKey||e.altKey)return;
+    if(e.key==='/'){e.preventDefault();$('#busca').focus();$('#busca').select()}
+    else if(e.key==='n'||e.key==='N'){e.preventDefault();openForm(null)}
+  });
+
   /* ---------- lista ---------- */
+  var booting=true;
+  function skeleton(){
+    var h='';for(var i=0;i<5;i++)h+='<div class="sk"></div>';
+    $('#lista').innerHTML=h;
+  }
+  /* destaca o trecho digitado no nome */
+  function hl(txt,q){
+    if(!q)return esc(txt);
+    var i=String(txt||'').toLowerCase().indexOf(q);
+    if(i<0)return esc(txt);
+    return esc(txt.slice(0,i))+'<mark>'+esc(txt.slice(i,i+q.length))+'</mark>'+esc(txt.slice(i+q.length));
+  }
   function render(){
     stats();
-    var q=($('#busca').value||'').toLowerCase();
+    if(booting){skeleton();return}
+    var q=($('#busca').value||'').toLowerCase().trim();
     var all=Store.products.list();
     var list=all.filter(function(p){
+      var st=STORES[p.store]||{};
       var okF=(filtro==='all'||p.store===filtro);
-      var okQ=!q||String(p.nome||'').toLowerCase().indexOf(q)>=0||String(p.id||'').toLowerCase().indexOf(q)>=0;
+      var okQ=!q||String(p.nome||'').toLowerCase().indexOf(q)>=0
+        ||String(p.id||'').toLowerCase().indexOf(q)>=0
+        ||String(st.n||'').toLowerCase().indexOf(q)>=0;
       return okF&&okQ;
     });
-    $('#cnt').textContent=all.length+' produto'+(all.length===1?'':'s')+(q||filtro!=='all'?' • '+list.length+' na lista':' • catálogo sincronizado');
+    list=sortList(list);
+    var extras=[];
+    if(filtro!=='all')extras.push(STORES[filtro]?STORES[filtro].n:filtro);
+    if(q)extras.push('“'+q+'”');
+    $('#cnt').textContent=all.length+' produto'+(all.length===1?'':'s')
+      +(extras.length?' • '+list.length+' em '+extras.join(' · '):' • catálogo sincronizado');
     if(!list.length){
-      $('#lista').innerHTML='<div class="empty"><span class="big">🗂️</span>'+(all.length?'Nenhum produto corresponde ao filtro.':'Nenhum produto ainda. Clique em “＋ Novo produto”.')+'</div>';
-      return;
+      $('#lista').innerHTML='<div class="empty"><span class="big">🗂️</span>'
+        +(all.length?'Nada encontrado neste filtro.<br><button class="mini" id="clearF" type="button" style="margin-top:10px">Limpar busca e filtro</button>'
+                   :'Nenhum produto ainda. Clique em “＋ Novo produto”.')+'</div>';
+      var cf=$('#clearF');
+      if(cf)cf.addEventListener('click',function(){$('#busca').value='';filtro='all';renderChips();render()});
+      syncBulk();return;
     }
     var lock=locked();
     $('#lista').innerHTML=list.map(function(p){
@@ -555,12 +696,15 @@ kbd{font-family:'Space Grotesk';background:var(--bg);border:1px solid var(--line
       var note=(p.nota!=null&&p.nota!=='')?'★ '+esc(p.nota):'—';
       var dp=Number(p.de),pp=Number(p.preco);
       var dd=(dp>0&&pp>0)?Math.round((1-pp/dp)*100):0;
-      return '<div class="row">'
+      var on=!!SEL[p.id];
+      return '<div class="row'+(on?' sel':'')+'" data-id="'+esc(p.id)+'">'
+        +'<div class="chk"><input type="checkbox" data-sel="'+esc(p.id)+'"'+(on?' checked':'')+' aria-label="Selecionar '+esc(p.nome)+'"></div>'
         +'<div class="thumb" style="background:linear-gradient(135deg,'+c1+','+c2+')">'+thumb+'</div>'
-        +'<div class="info"><div class="pname">'+esc(p.nome)+'</div>'
+        +'<div class="info"><div class="pname">'+hl(p.nome,q)+'</div>'
         +'<div class="pmeta"><span class="tag" style="color:'+st.c+'">'+esc(st.n)+'</span>'
         +'<span class="pid">'+esc(p.id)+'</span>'
-        +(dd>0?'<span class="tag" style="color:#39ff88">-'+dd+'%</span>':'')+'</div></div>'
+        +(dd>0?'<span class="tag" style="color:'+(dd>50?'#ff4d5e':'#39ff88')+'">-'+dd+'%</span>':'')
+        +(pp?'<span class="was">'+brl(dp)+'</span>':'')+'</div></div>'
         +'<div class="c-price"><span class="money">'+brl(pp)+'</span></div>'
         +'<div class="c-rate"><span class="rate">'+note+'</span></div>'
         +'<div class="acts">'
@@ -568,19 +712,36 @@ kbd{font-family:'Space Grotesk';background:var(--bg);border:1px solid var(--line
         +'<button class="mini del" data-del="'+esc(p.id)+'"'+(lock?' disabled title="'+esc(lockMsg())+'"':'')+'>Excluir</button>'
         +'</div></div>';
     }).join('');
+    syncBulk();
   }
-  $('#busca').addEventListener('input',render);
+  var searchT;
+  $('#busca').addEventListener('input',function(){clearTimeout(searchT);searchT=setTimeout(render,140)});
 
+  $('#lista').addEventListener('change',function(e){
+    var c=e.target.closest('input[data-sel]');if(!c)return;
+    SEL[c.dataset.sel]=c.checked;
+    syncBulk();
+    var row=c.closest('.row');if(row)row.classList.toggle('sel',c.checked);
+  });
   $('#lista').addEventListener('click',function(e){
-    var b=e.target.closest('button');if(!b||b.disabled)return;
-    if(b.dataset.edit)openForm(b.dataset.edit);
-    if(b.dataset.del){
-      var p=Store.products.get(b.dataset.del);
-      ask('Excluir produto','Tem certeza que deseja excluir “'+(p?p.nome:b.dataset.del)+'”? Não dá para desfazer.').then(function(yes){
-        if(!yes)return;
-        Store.products.remove(b.dataset.del);render();toast('Produto excluído.');
-      });
+    var chk=e.target.closest('input[data-sel]');if(chk)return;
+    var b=e.target.closest('button');
+    if(b){
+      if(b.disabled)return;
+      if(b.dataset.edit){openForm(b.dataset.edit);return}
+      if(b.dataset.del){
+        var p=Store.products.get(b.dataset.del);
+        ask('Excluir produto','Tem certeza que deseja excluir “'+(p?p.nome:b.dataset.del)+'”? Não dá para desfazer.').then(function(yes){
+          if(!yes)return;
+          delete SEL[b.dataset.del];
+          Store.products.remove(b.dataset.del);render();toast('Produto excluído.');
+        });
+      }
+      return;
     }
+    /* clicar na linha abre a edição (atalho de mouse) */
+    var row=e.target.closest('.row');
+    if(row&&!locked())openForm(row.dataset.id);
   });
   /* ---------- formulário de produto ---------- */
   function storeOptions(sel){
@@ -667,7 +828,7 @@ kbd{font-family:'Space Grotesk';background:var(--bg);border:1px solid var(--line
     e.preventDefault();
     Store.settings.set({
       brandA:($('#s_brandA').value||'').trim()||'NEON',
-      brandB:($('#s_brandB').value||'').trim()||'DEALS',
+      brandB:($('#s_brandB').value||'').trim()||'S',
       footer:($('#s_footer').value||'').trim()
     });
     toast('Identidade salva. Abra a loja para ver.');
@@ -777,9 +938,12 @@ kbd{font-family:'Space Grotesk';background:var(--bg);border:1px solid var(--line
   Store.onWriteError(function(m){toast('Erro ao gravar na nuvem: '+m,'err');});
 
   /* ---------- início ---------- */
+  $('#bulkStoreSel').innerHTML='<option value="">Mover para…</option>'
+    +Object.keys(STORES).map(function(k){return '<option value="'+k+'">'+esc(STORES[k].n)+'</option>'}).join('');
   loadSettings();renderChips();
   if(authed()){$('#gate').classList.add('hide');}else{showGate();}
-  Store.init().then(function(){updateCloud();renderAuth();renderChips();render();});
+  Store.init().then(function(){booting=false;updateCloud();renderAuth();renderChips();render();})
+    .catch(function(e){booting=false;render();toast('Falha ao carregar os dados: '+(e&&e.message||e),'err');});
 })();
 </script>
 </body>
