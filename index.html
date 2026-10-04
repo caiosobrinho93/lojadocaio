@@ -107,11 +107,13 @@ header:after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;
 .chip{padding:9px 18px;border-radius:99px;background:var(--panel);border:1px solid #26264a;color:var(--mut);cursor:pointer;font:600 14px Inter,sans-serif;transition:all .35s var(--ease)}
 .chip:hover{color:var(--txt);border-color:var(--c1)}
 .chip.on{color:#05050a;background:var(--c1);border-color:var(--c1);box-shadow:0 0 20px rgba(0,240,255,.55)}
-.sec-h{display:flex;align-items:end;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:30px 0 20px}
+.sec-h{display:flex;align-items:end;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:0 0 34px;padding-top:150px}
+.sec-h:first-child{padding-top:40px}
 .sec-h h2{margin:0;font-size:28px}
 .sec-h h2:before{content:"";display:inline-block;width:6px;height:26px;background:var(--c3);box-shadow:0 0 14px var(--c3);border-radius:3px;margin-right:12px;vertical-align:-4px}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:22px;padding-bottom:70px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:22px;padding-bottom:0}
 .grid.sub{padding-bottom:0}
+.kpis{margin-bottom:0}
 .card{--o:0;--mx:50%;--my:50%;position:relative;border-radius:22px;padding:1px;cursor:pointer;display:flex;height:400px;background:linear-gradient(160deg,#2c2c58,#14142a);box-shadow:0 14px 40px rgba(0,0,0,.55),0 26px 70px rgba(0,240,255,calc(.22*var(--o))),0 0 44px rgba(176,77,255,calc(.22*var(--o)));animation:cardIn 1s var(--ease) backwards;will-change:transform}
 .card:before{content:"";position:absolute;inset:0;border-radius:inherit;background:radial-gradient(280px circle at var(--mx) var(--my),var(--c1),var(--c2) 45%,transparent 72%);opacity:var(--o)}
 .inner{position:absolute;inset:1px;background:#0e0e1d;border-radius:21px;overflow:hidden}
@@ -343,11 +345,11 @@ function home(){
   <div class="grid sub" id="r1"></div>
   <div class="sec-h" id="produtos"><h2>Catálogo completo</h2><span style="color:var(--mut)" id="cnt"></span></div>
   <div class="grid" id="grid"></div>
-  <div class="sec-h" style="margin-top:10px"><h2>⭐ Mais bem avaliados</h2><span style="color:var(--mut)">nota mais alta entre os selecionados</span></div>
+  <div class="sec-h"><h2>⭐ Mais bem avaliados</h2><span style="color:var(--mut)">nota mais alta entre os selecionados</span></div>
   <div class="grid sub" id="r2"></div>
-  <div class="sec-h" style="margin-top:10px"><h2>🏷️ Cupons e dicas</h2></div>
+  <div class="sec-h"><h2>🏷️ Cupons e dicas</h2></div>
   <div class="promos" id="promos"></div>
-  <div class="rel" style="margin-top:40px"><div class="news">
+  <div class="rel" style="margin-top:150px"><div class="news">
     <div><h3>Receba as ofertas antes de todo mundo</h3><p>Entradas semanais com os achadinhos que mais valem a pena. Sem spam, cancele quando quiser.</p></div>
     <form id="nform"><input type="email" id="nmail" placeholder="seu@email.com" required><button class="btn" type="submit">Quero receber</button></form>
   </div></div></div>${sideBanners()}</div>`;
@@ -474,8 +476,8 @@ function produto(id){
     <div><b>💳 Sem cadastro</b>Você paga direto na loja, sem criar conta aqui.</div>
     <div><b>💰 Preço real</b>Mostramos o valor que será cobrado de verdade.</div>
   </div></div></section>
-  <section class="rel"><div class="sec-h"><h2>Você também pode gostar</h2></div><div class="grid sub">${relacionados(p).map((x,i)=>card(x,i,70)).join('')}</div></section>
-  <section class="cbox" id="cmts"><div class="sec-h"><h2>Avaliações</h2></div></section></div>${sideBanners()}</div>`;
+  <section class="rel"><div class="sec-h" style="padding-top:150px"><h2>Você também pode gostar</h2></div><div class="grid sub">${relacionados(p).map((x,i)=>card(x,i,70)).join('')}</div></section>
+  <section class="cbox" id="cmts"><div class="sec-h" style="padding-top:150px"><h2>Avaliações</h2></div></section></div>${sideBanners()}</div>`;
   comentarios(p.id);
 }
 function rota(){
