@@ -199,6 +199,28 @@
           return rows.length;
         });
       }
+    },
+
+    /* ---------- autenticação (Supabase Auth) ---------- */
+    auth: {
+      ready: function () { return !!sb; },
+      signIn: function (email, password) {
+        if (!sb) return Promise.reject(new Error('Supabase indisponível (modo local).'));
+        return sb.auth.signInWithPassword({ email: email, password: password }).then(function (r) {
+          if (r.error) throw new Error(r.error.message);
+          notify(); return r.data.user;
+        });
+      },
+      signOut: function () {
+        if (!sb) return Promise.resolve();
+        return sb.auth.signOut().then(function () { notify(); return true; });
+      },
+      current: function () {
+        if (!sb) return Promise.resolve(null);
+        return sb.auth.getSession().then(function (r) {
+          return (r && r.data && r.data.session && r.data.session.user) || null;
+        }).catch(function () { return null; });
+      }
     }
   };
 

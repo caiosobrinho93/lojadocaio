@@ -63,6 +63,14 @@ Settings → Pages → Deploy from branch → `main` / `root`.
 
 ## Segurança (importante)
 
-- A chave `sb_publishable_` é **pública** — o que protege os dados são as **políticas (RLS)** no Supabase.
-- O `supabase-schema.sql` libera **leitura para todos** e **escrita para a chave pública** (para o painel funcionar). Para produção, use a **versão segura comentada** no fim do SQL (cria um usuário admin e permite escrita só para autenticados).
-- A senha do painel é uma proteção de tela (client-side), não substitui a autenticação real do Supabase.
+A chave `sb_publishable_` é **pública** — quem protege os dados são as **políticas (RLS)** + **Supabase Auth**.
+
+**Estado atual do banco:** escrita liberada para a chave pública (para o painel funcionar sem login).
+**Para blindar (recomendado):**
+
+1. Supabase → **Authentication → Users → Add user**: crie e-mail/senha e marque **"Auto Confirm User"**.
+2. SQL Editor → cole **`supabase-security.sql`** → **Run** (deixa a escrita só para usuários logados).
+3. `admin.html` → aba **Identidade** → **"Segurança — login na nuvem"** → entre com esse e-mail/senha.
+4. A partir daí, só quem está logado altera produtos. (Para voltar ao modo simples, as instruções estão no fim do próprio `supabase-security.sql`.)
+
+A senha antiga (`admin`) do painel é só uma proteção de tela client-side; **não** substitui o login real acima.

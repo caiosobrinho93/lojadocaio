@@ -133,6 +133,11 @@ label{display:flex;flex-direction:column;gap:6px;font-size:13px;color:var(--mut)
     </div>
     <p class="mut" style="margin:0;font-size:12px">Primeira vez? Rode o <code>supabase-schema.sql</code> no SQL Editor do Supabase para criar a tabela. Depois clique em “Enviar produtos para a nuvem”.</p>
   </div>
+  <div class="sec">
+    <h3>Segurança — login na nuvem</h3>
+    <div id="authBox"></div>
+    <p class="mut" style="margin:0;font-size:12px">Depois de rodar o <code>supabase-security.sql</code>, só quem estiver logado consegue gravar. Crie o usuário em Supabase → Authentication → Users → Add user (marque “Auto Confirm”).</p>
+  </div>
 </section>
 
 </main>
@@ -344,10 +349,31 @@ label{display:flex;flex-direction:column;gap:6px;font-size:13px;color:var(--mut)
     Store.cloud.downloadAll().then(function(n){renderList();updateCloud();alert(n+' produto(s) baixado(s) da nuvem.');}).catch(function(e){alert('Falha ao baixar: '+e.message);});
   });
 
+  /* ---- conta (login na nuvem) ---- */
+  function renderAuth(){
+    var box=$('#authBox'); if(!box) return;
+    if(!Store.auth.ready()){ box.innerHTML='<p class="mut" style="margin:0">Disponível quando o Supabase estiver configurado.</p>'; return; }
+    Store.auth.current().then(function(u){
+      if(u){
+        box.innerHTML='<p class="mut" style="margin:0">Conectado como <b style="color:var(--ok)">'+esc(u.email)+'</b> — suas alterações são gravadas com segurança.</p><div class="actions" style="justify-content:flex-start"><button id="authOut" class="btn ghost" type="button">Sair</button></div>';
+        $('#authOut').onclick=function(){ Store.auth.signOut().then(renderAuth); };
+      } else {
+        box.innerHTML='<p class="mut" style="margin:0 0 8px">Entre para gravar com segurança (necessário depois de ativar o RLS seguro).</p>'
+          +'<div class="grid2"><label>E-mail<input id="a_email" type="email" placeholder="voce@email.com"></label><label>Senha<input id="a_pass" type="password" placeholder="sua senha"></label></div>'
+          +'<div class="actions" style="justify-content:flex-start"><button id="authIn" class="btn" type="button">Entrar na nuvem</button></div><div id="authErr" class="err"></div>';
+        $('#authIn').onclick=function(){
+          var e=$('#a_email').value.trim(), p=$('#a_pass').value;
+          if(!e||!p){ $('#authErr').textContent='Informe e-mail e senha.'; return; }
+          Store.auth.signIn(e,p).then(function(){ renderAuth(); }).catch(function(err){ $('#authErr').textContent=err.message; });
+        };
+      }
+    });
+  }
+
   /* ---- inicio ---- */
   applyBrand();
   if(authed())showPanel();else showGate();
-  Store.init().then(function(){renderList();updateCloud();});
+  Store.init().then(function(){renderList();updateCloud();renderAuth();});
 
 })();
 </script>
