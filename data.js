@@ -74,6 +74,27 @@
   var cache = null, settingsCache = null, mode = 'local', lastError = '', sb = null, listeners = [];
   function notify() { for (var i = 0; i < listeners.length; i++) { try { listeners[i](); } catch (e) { console.warn(e); } } }
 
+  /* ---------- migração de marca ----------
+     Versões antigas gravavam brandB='DEALS' (padrão do painel), o que fazia o
+     site aparecer como NEONDEALS mesmo com DEFAULT_SETTINGS corrigido. Como o
+     valor já estava salvo no navegador, o padrão nunca mais era aplicado.
+     Aqui normalizamos a marca sem tocar em produtos ou nas preferências. */
+  var LEGACY_BRAND = { DEALS: 'S', DEAL: 'S', NEONDEALS: 'NEONS', ACHADINHOS: 'S' };
+  function migrateBrand(saved) {
+    if (!saved) return null;
+    var patch = null;
+    var b = String(saved.brandB == null ? '' : saved.brandB).trim().toUpperCase();
+    if (Object.prototype.hasOwnProperty.call(LEGACY_BRAND, b)) {
+      var nb = LEGACY_BRAND[b];
+      if (nb !== saved.brandB) patch = { brandB: nb };
+    }
+    var a = String(saved.brandA == null ? '' : saved.brandA).trim().toUpperCase();
+    if (a === 'NEONDEALS' || a === 'NEON DEALS') patch = Object.assign(patch || {}, { brandA: 'NEON' });
+    /* nome vazio volta ao padrão, para nunca exibir "NEON" sozinho */
+    if (saved.brandB != null && !String(saved.brandB).trim() && !patch) patch = { brandB: DEFAULT_SETTINGS.brandB };
+    return patch;
+  }
+
   /* ---------- mapeamento local <-> banco (coluna descricao <-> desc) ---------- */
   function toDb(p) {
     return {
@@ -114,7 +135,15 @@
     /* Conecta (se possível) e carrega os produtos. Sempre resolve — nunca quebra a loja. */
     init: function () {
       cache = read(KEY_PRODUCTS, SEED);
-      settingsCache = Object.assign({}, clone(DEFAULT_SETTINGS), read(KEY_SETTINGS, {}));
+      var savedSettings = read(KEY_SETTINGS, {});
+      settingsCache = Object.assign({}, clone(DEFAULT_SETTINGS), savedSettings);
+      var brandPatch = migrateBrand(savedSettings);
+      if (brandPatch) {
+        /* aplica e persiste, senão volta a "NEONDEALS" no próximo carregamento */
+        Object.assign(settingsCache, brandPatch);
+        write(KEY_SETTINGS, settingsCache);
+        console.warn('NEONS: marca legada migrada ->', JSON.stringify(brandPatch));
+      }
       if (!CFG.supabaseUrl || !CFG.supabaseKey || !global.supabase || !global.supabase.createClient) {
         lastError = CFG.supabaseUrl ? 'Biblioteca do Supabase não carregada (offline?).' : 'Supabase não configurado.';
         mode = 'local';

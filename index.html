@@ -522,36 +522,38 @@ function lista(){
 }
 function tilt(c){
   let b=null;
-  /* estado atual (A) e alvo (T): o loop interpola para suavizar o movimento */
-  const A={ax:0,ay:0,rz:0,sc:0,o:0,mx:50,my:50},T={...A};
+  /* Estado atual (A) e alvo (T); o loop interpola para suavizar o movimento. */
+  const A={rx:0,ry:0,rz:0,sc:0,o:0,mx:50,my:50},T={...A};
   let raf=0;
   const run=()=>{
     let busy=false;
     for(const k in A){const d=T[k]-A[k];A[k]+=d*((k==='mx'||k==='my')?.24:.13);if(Math.abs(d)>.02)busy=true}
-    /* rotate3d: o eixo vem do offset do cursor, como no original */
-    c.style.transform=`perspective(1200px) translateY(${(-A.sc*10).toFixed(2)}px) scale3d(${1+A.sc*.07},${1+A.sc*.07},1) rotate3d(${A.ax.toFixed(3)},${A.ay.toFixed(3)},0,${A.rz.toFixed(2)}deg)`;
+    c.style.transform=`perspective(1200px) translateY(${(-A.sc*10).toFixed(2)}px) scale3d(${(1+A.sc*.07).toFixed(4)},${(1+A.sc*.07).toFixed(4)},1) rotateX(${A.rx.toFixed(2)}deg) rotateY(${A.ry.toFixed(2)}deg) rotateZ(${A.rz.toFixed(2)}deg)`;
     c.style.setProperty('--o',A.o.toFixed(3));
     c.style.setProperty('--mx',A.mx.toFixed(1)+'%');
     c.style.setProperty('--my',A.my.toFixed(1)+'%');
     raf=busy?requestAnimationFrame(run):0;
   };
   const go=()=>{if(!raf)raf=requestAnimationFrame(run)};
+  /* Angulos de Euler derivados do cursor (contínuos, ver nota abaixo). */
   const aim=e=>{
     if(!b)b=c.getBoundingClientRect();
-    const cx=e.clientX-b.left-b.width/2,cy=e.clientY-b.top-b.height/2;
-    const dist=Math.sqrt(cx*cx+cy*cy);
-    /* eixo: o desvio vertical vira eixo X da rotacao (e o inverso no Y) */
-    T.ax=cy/100;T.ay=-cx/100;
-    /* angulo cresce com a distancia do centro; log evita valores absurdos nas bordas.
-       O +1 evita -Infinity quando o cursor esta exatamente no centro. */
-    T.rz=Math.min(Math.log(dist+1)*2,14);
+    /* -1..1 em cada eixo, medidos a partir do centro do card */
+    const nx=-(e.clientX-b.left-b.width/2)/(b.width/2);
+    const ny=(e.clientY-b.top-b.height/2)/(b.height/2);
+    const d=Math.min(1,Math.hypot(nx,ny));
+    /* Cada angulo e uma funcao continua da posicao: ao cruzar o meio do card
+       os valores passam por zero em vez de trocar de sinal de repente. */
+    T.ry=nx*15;
+    T.rx=ny*11;
+    T.rz=Math.log(d+1)*9;
     T.mx=(e.clientX-b.left)/b.width*100;
     T.my=(e.clientY-b.top)/b.height*100;
     go();
   };
   c.addEventListener('pointerenter',e=>{b=c.getBoundingClientRect();T.sc=1;T.o=1;aim(e)});
   c.addEventListener('pointermove',aim);
-  c.addEventListener('pointerleave',()=>{b=null;T.ax=T.ay=T.rz=T.sc=T.o=0;go()});
+  c.addEventListener('pointerleave',()=>{b=null;T.rx=T.ry=T.rz=T.sc=T.o=0;go()});
 }
 function produto(id){
   const p=PRODUCTS.find(x=>x.id===id);if(!p)return location.hash='#/';
