@@ -31,8 +31,10 @@ a{color:inherit;text-decoration:none}
 header{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:linear-gradient(180deg,rgba(13,13,26,.97),rgba(7,7,13,.85));backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-bottom:1px solid rgba(0,240,255,.16);box-shadow:0 10px 34px rgba(0,0,0,.5)}
 header:after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;background:linear-gradient(90deg,transparent,var(--c1),var(--c2),var(--c3),transparent);opacity:.8}
 /* logo sempre no centro exato, independente da largura dos lados */
-.bar{position:relative;display:flex;align-items:center;justify-content:space-between;gap:16px;height:78px}
+.bar{position:relative;display:flex;align-items:center;justify-content:space-between;gap:16px;height:88px}
 .brand-center{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;line-height:1;text-align:center;z-index:1}
+/* 100x80 pedido. object-fit:contain impede que o GIF 5:4 seja esticado. */
+.brand-logo{width:100px;height:80px;object-fit:contain;display:block;border-radius:10px}
 .bar-l{display:flex;align-items:center;gap:10px;min-width:0}
 .nav{display:flex;align-items:center;gap:2px;justify-content:flex-start}
 .bar-r{display:flex;align-items:center;justify-content:flex-end;gap:8px}
@@ -63,10 +65,10 @@ header:after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;
 
 /* nav some em 980 e o hamburger assume; abaixo de 470 tudo compacta */
 @media(max-width:980px){.nav{display:none}.burger{display:grid}}
-@media(max-width:620px){.bar{height:64px}.logo{font-size:24px}}
+@media(max-width:620px){.bar{height:72px}.brand-logo{width:84px;height:68px}}
 @media(max-width:470px){
-  .bar{height:56px;gap:6px;padding:0 10px}
-  .logo{font-size:19px;letter-spacing:2px}
+  .bar{height:60px;gap:6px;padding:0 10px}
+  .brand-logo{width:70px;height:56px}
   .icon-btn{width:34px;height:34px;border-radius:10px}
   .icon-btn svg{width:16px;height:16px}
   .fullmenu a{font-size:24px;padding:10px 18px}
@@ -271,7 +273,9 @@ footer{position:relative;z-index:1;border-top:1px solid #1d1d38;padding:44px 20p
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
     </button>
   </div>
-  <a class="brand-center" href="#/" aria-label="NEONS inicio"><span class="logo">NEONS</span></a>
+  <a class="brand-center" href="#/" aria-label="NEONS — início">
+    <img class="brand-logo" src="logo-neon.gif" width="100" height="80" alt="NEONS" decoding="async">
+  </a>
   <div class="bar-r">
     <button class="icon-btn" id="btnSearch" type="button" aria-label="Abrir busca" aria-expanded="false" aria-controls="spanel">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
@@ -521,39 +525,22 @@ function lista(){
   return l;
 }
 function tilt(c){
-  let b=null;
-  /* Estado atual (A) e alvo (T); o loop interpola para suavizar o movimento. */
-  const A={rx:0,ry:0,rz:0,sc:0,o:0,mx:50,my:50},T={...A};
+  /* Efeito 3D original do NEONS: inclinacao suave seguindo o cursor.
+     Os angulos sao interpolados por quadro (A -> T), o que remove o
+     "truncado" que aparecia com rotacao por eixo variavel. */
+  const A={rx:0,ry:0,ty:0,mx:50,my:50,o:0,sc:0},T={...A};
   let raf=0;
-  const run=()=>{
-    let busy=false;
-    for(const k in A){const d=T[k]-A[k];A[k]+=d*((k==='mx'||k==='my')?.24:.13);if(Math.abs(d)>.02)busy=true}
-    c.style.transform=`perspective(1200px) translateY(${(-A.sc*10).toFixed(2)}px) scale3d(${(1+A.sc*.07).toFixed(4)},${(1+A.sc*.07).toFixed(4)},1) rotateX(${A.rx.toFixed(2)}deg) rotateY(${A.ry.toFixed(2)}deg) rotateZ(${A.rz.toFixed(2)}deg)`;
+  const pt=e=>{const r=c.getBoundingClientRect();return[(e.clientX-r.left)/r.width,(e.clientY-r.top)/r.height]};
+  const run=()=>{let busy=false;for(const k in A){const d=T[k]-A[k];A[k]+=d*(k[0]==='m'?.24:.13);if(Math.abs(d)>.02)busy=true}
+    c.style.transform=`perspective(900px) translateY(${A.ty.toFixed(2)}px) rotateX(${A.rx.toFixed(2)}deg) rotateY(${A.ry.toFixed(2)}deg) scale(${(1+A.sc*.05).toFixed(4)})`;
     c.style.setProperty('--o',A.o.toFixed(3));
     c.style.setProperty('--mx',A.mx.toFixed(1)+'%');
     c.style.setProperty('--my',A.my.toFixed(1)+'%');
-    raf=busy?requestAnimationFrame(run):0;
-  };
+    raf=busy?requestAnimationFrame(run):0};
   const go=()=>{if(!raf)raf=requestAnimationFrame(run)};
-  /* Angulos de Euler derivados do cursor (contínuos, ver nota abaixo). */
-  const aim=e=>{
-    if(!b)b=c.getBoundingClientRect();
-    /* -1..1 em cada eixo, medidos a partir do centro do card */
-    const nx=-(e.clientX-b.left-b.width/2)/(b.width/2);
-    const ny=(e.clientY-b.top-b.height/2)/(b.height/2);
-    const d=Math.min(1,Math.hypot(nx,ny));
-    /* Cada angulo e uma funcao continua da posicao: ao cruzar o meio do card
-       os valores passam por zero em vez de trocar de sinal de repente. */
-    T.ry=nx*15;
-    T.rx=ny*11;
-    T.rz=Math.log(d+1)*9;
-    T.mx=(e.clientX-b.left)/b.width*100;
-    T.my=(e.clientY-b.top)/b.height*100;
-    go();
-  };
-  c.addEventListener('pointerenter',e=>{b=c.getBoundingClientRect();T.sc=1;T.o=1;aim(e)});
-  c.addEventListener('pointermove',aim);
-  c.addEventListener('pointerleave',()=>{b=null;T.rx=T.ry=T.rz=T.sc=T.o=0;go()});
+  c.addEventListener('pointerenter',e=>{const[x,y]=pt(e);A.mx=T.mx=x*100;A.my=T.my=y*100;T.ty=-20;T.sc=1;T.o=1;go()});
+  c.addEventListener('pointermove',e=>{const[x,y]=pt(e);T.ry=(x-.5)*26;T.rx=(.5-y)*19;T.mx=x*100;T.my=y*100;go()});
+  c.addEventListener('pointerleave',()=>{T.rx=T.ry=T.ty=T.o=T.sc=0;go()});
 }
 function produto(id){
   const p=PRODUCTS.find(x=>x.id===id);if(!p)return location.hash='#/';
